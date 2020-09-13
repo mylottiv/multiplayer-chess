@@ -7,7 +7,7 @@ const chessboardDefaultState = [
     {Piece: {type: 'King', color: 'White', moved: false}},
     {Piece: {type: 'Bishop', color: 'White'}},
     {Piece: {type: 'Knight', color: 'White'}},
-    {Piece: {type: 'Rook', color: 'White', enPassant: false}},
+    {Piece: {type: 'Rook', color: 'White', moved: false}},
     // Rank 2
     {Piece: {type: 'Pawn', color: 'White', enPassant: false}},
     {Piece: {type: 'Pawn', color: 'White', enPassant: false}},
@@ -73,4 +73,19 @@ const chessboardDefaultState = [
     {Piece: {type: 'Rook', color: 'Black', moved: false}},
 ];
 
-module.exports = {chessboardState: chessboardDefaultState};
+function newBoardInitializer(inputState) {
+    let outputState, value, key;
+
+    if (Array.isArray(inputState) || inputState === null ) return inputState;
+
+    outputState = [];
+
+    for (key in inputState) {
+        value = inputState[key];
+        outputState[key] = newBoardInitializer(value);
+    }
+
+    return outputState;
+}
+
+module.exports = {chessboardDefaultState, newBoardInitializer};
