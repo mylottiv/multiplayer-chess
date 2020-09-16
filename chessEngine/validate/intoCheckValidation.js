@@ -21,7 +21,15 @@ function axisDirectionTest(startPieceIndex, targetPieceIndex) {
     }
 
     return axisReference[differenceFactor](positiveDifference);
+};
+
+function adjacencyTest(baseIndex, testIndex) {
+    const difference = Math.abs(testIndex - baseIndex);
+    const adjacentDifferences = [1, 7, 8, 9];
+    return adjacentDifferences.includes(difference);
 }
+
+
 
 function intoCheckValidation(chessboard, playerKingIndex, playerMoves, opponentMoves) {
 
@@ -32,13 +40,51 @@ function intoCheckValidation(chessboard, playerKingIndex, playerMoves, opponentM
 
         // Filter moves that would put King into opponent Valid Moveset
         if (playerPiece.type === 'King') {
-            
-            filterFunction = (moveCoordinates) => !opponentMoves.some(({moveset}) => moveset.includes(moveCoordinates));
-            
-            // Filter moves that would result in a check by opponent's piece being removed
-            // TODO
-        }    
 
+            const playerColor = chessboard[playerKingIndex].Piece.color;
+
+            const opponentColor = (playerColor === 'White') ? 'Black' : 'White';
+            
+            const kingCanCapture = playerPiece.canCapture;
+            
+            // If opponentColor piece can be captured by King, is in an opponent piece's possible moveset, and is adjacent to a valid move or said piece, then filter out
+            
+            const riskyCaptures = kingCanCapture.filter(targetedPiece => {
+
+                const targetedPieceIndex = chessboardNotationEnum[targetedPiece.coordinates];
+
+                return opponentMoves.some(riskyOpponentPiece => {
+                    
+                    const riskyOpponentPieceIndex = chessboardNotationEnum[riskyOpponentPiece.coordinates];
+                    
+                    const opponentPieceTypeRef = (riskyOpponentPiece.type === 'Pawn') ? opponentColor + riskyOpponentPiece.type : riskyOpponentPiece.type
+
+                    const possibleOpponentMoves = allPossibleMoves[opponentPieceTypeRef][riskyOpponentPieceIndex].possibleMoveset;
+                    
+                    if (possibleOpponentMoves.includes(chessboardNotationEnum[targetedPiece.coordinates])) {
+                        if (riskyOpponentPiece.type === 'Pawn') {
+                            const diagonals = [7, 9];
+                            const riskyPawnCanCapture = diagonals.includes(Math.abs(riskyOpponentPieceIndex - targetedPieceIndex));
+                            return (riskyPawnCanCapture);
+                        }
+                        else if (riskyOpponentPiece.type !== 'Knight') {
+                            const nextToMoveOrPiece = (adjacencyTest(targetedPieceIndex, riskyOpponentPieceIndex) || riskyOpponentPiece.moveset.some(({validMove}) => adjacencyTest(targetedPieceIndex, chessboardNotationEnum[validMove])));
+                            return (nextToMoveOrPiece);
+                        }
+                        // If canCapture piece is in Knight's possible moveset, then capturing said piece would place King in check by Knight
+                        else return (riskyOpponentPiece.type === 'Knight');
+                    }
+                })
+            })
+            
+            filterFunction = (moveCoordinates) => {
+                const notInOpponentMoveset = (!opponentMoves.some(({moveset}) => moveset.includes(moveCoordinates)))
+                const notRiskyCapture = (!riskyCaptures.some(({coordinates: captureCoordinates}) => captureCoordinates === moveCoordinates))
+                return (notInOpponentMoveset && notRiskyCapture);
+            };
+            
+        }    
+        
         // Filter moves that would result in a check by player's piece being removed
         else {
             
