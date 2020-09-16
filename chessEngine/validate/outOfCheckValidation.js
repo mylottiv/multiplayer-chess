@@ -1,5 +1,4 @@
 function outOfCheckValidation(validPlayerMoves, opponentCheckingPieces) {
-    console.log('player', validPlayerMoves, 'opponent', opponentCheckingPieces);
     const newValidPlayerMoves = validPlayerMoves.map(piece => {
         let filterFunction;
         if (piece.type === 'King') filterFunction = (coordinates) => !opponentCheckingPieces.some(({moveset}) => moveset.includes(coordinates))
