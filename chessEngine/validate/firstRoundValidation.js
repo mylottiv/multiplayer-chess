@@ -6,10 +6,12 @@ function firstRoundValidation(chessboard) {
     const validBlackMovesets = [];
     chessboard.forEach(({Piece}, index) => {
         if (Piece !== null) {
-            const movesetInfo =                 {
+            const {moveset, canCapture} = getValidMoveset(chessboard, Piece.type, index, Piece.color)
+            const movesetInfo = {
                 type: Piece.type, 
                 coordinates: chessboardArrayEnum[index],
-                moveset: getValidMoveset(chessboard, Piece.type, index, Piece.color)
+                moveset,
+                canCapture
             };
             if (Piece.color === 'White') validWhiteMovesets.push(movesetInfo)
             else validBlackMovesets.push(movesetInfo);
