@@ -196,13 +196,13 @@ function getPossibleMoveset(piece, coordinateIndex, color = 'White') {
 }
 
 const allPossibleMoves = {
-    WhitePawn: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, moveset: getPossibleMoveset('Pawn', index)}}),
-    BlackPawn: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, moveset: getPossibleMoveset('Pawn', index, 'Black')}}),
-    Rook: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, moveset: getPossibleMoveset('Rook', index)}}),
-    Knight: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, moveset: getPossibleMoveset('Knight', index)}}),
-    Bishop: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, moveset: getPossibleMoveset('Bishop', index)}}),
-    Queen: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, moveset: getPossibleMoveset('Queen', index)}}),
-    King: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, moveset: getPossibleMoveset('King', index)}})
+    WhitePawn: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, possibleMoveset: getPossibleMoveset('Pawn', index)}}),
+    BlackPawn: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, possibleMoveset: getPossibleMoveset('Pawn', index, 'Black')}}),
+    Rook: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, possibleMoveset: getPossibleMoveset('Rook', index)}}),
+    Knight: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, possibleMoveset: getPossibleMoveset('Knight', index)}}),
+    Bishop: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, possibleMoveset: getPossibleMoveset('Bishop', index)}}),
+    Queen: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, possibleMoveset: getPossibleMoveset('Queen', index)}}),
+    King: chessboardArrayEnum.map((entry, index) => {return {numericalIndex: index, possibleMoveset: getPossibleMoveset('King', index)}})
 }
 
 module.exports = {allPossibleMoves};
