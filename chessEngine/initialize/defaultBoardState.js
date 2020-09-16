@@ -1,13 +1,13 @@
 const chessboardDefaultState = [
     // Rank 1
-    {Piece: {type: 'Rook', color: 'White', moved: false}},
+    {Piece: {type: 'Rook', color: 'White', canCastle: true}},
     {Piece: {type: 'Knight', color: 'White'}},
     {Piece: {type: 'Bishop', color: 'White'}},
     {Piece: {type: 'Queen', color: 'White'}},
-    {Piece: {type: 'King', color: 'White', moved: false}},
+    {Piece: {type: 'King', color: 'White', canCastle: true}},
     {Piece: {type: 'Bishop', color: 'White'}},
     {Piece: {type: 'Knight', color: 'White'}},
-    {Piece: {type: 'Rook', color: 'White', moved: false}},
+    {Piece: {type: 'Rook', color: 'White', canCastle: true}},
     // Rank 2
     {Piece: {type: 'Pawn', color: 'White', enPassant: false}},
     {Piece: {type: 'Pawn', color: 'White', enPassant: false}},
@@ -63,14 +63,14 @@ const chessboardDefaultState = [
     {Piece: {type: 'Pawn', color: 'Black', enPassant: false}},
     {Piece: {type: 'Pawn', color: 'Black', enPassant: false}},
     // Rank 8
-    {Piece: {type: 'Rook', color: 'Black', moved: false}},
+    {Piece: {type: 'Rook', color: 'Black', canCastle: true}},
     {Piece: {type: 'Knight', color: 'Black'}},
     {Piece: {type: 'Bishop', color: 'Black'}},
     {Piece: {type: 'Queen', color: 'Black'}},
-    {Piece: {type: 'King', color: 'Black', moved: false}},
+    {Piece: {type: 'King', color: 'Black', canCastle: true}},
     {Piece: {type: 'Bishop', color: 'Black'}},
     {Piece: {type: 'Knight', color: 'Black'}},
-    {Piece: {type: 'Rook', color: 'Black', moved: false}},
+    {Piece: {type: 'Rook', color: 'Black', canCastle: true}},
 ];
 
 function newBoardInitializer(inputState) {
