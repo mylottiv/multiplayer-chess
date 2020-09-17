@@ -8,6 +8,8 @@ function validateParsedMove(chessboard, validMoves, piece, targetNotation, start
     if (allValidOptions.length > 1) {
         if (startNotation === null) return 'Multiple possible moves please specify file or rank of moving piece'
         else {
+            // This has an error if the startNotation isn't accurate
+            // Also should keep an eye as to whether it will take exact coordinate or just rank/file
             selectedPieceNotation = allValidOptions.find(({coordinates}) => (coordinates === startNotation)).coordinates;
         };
     }
