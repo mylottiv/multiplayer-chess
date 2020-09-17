@@ -1,8 +1,11 @@
 const { allPossibleMoves } = require('../initialize/possibleMovesets');
 const { stepperOperations } = require('../validate/stepperOperations');
 const { chessboardNotationEnum } = require('../initialize/chessboardEnums');
+const { chessboardEdges } = require('../initialize/chessboardEdges');
 
 function axisDirectionTest(startPieceIndex, targetPieceIndex) {
+
+    // Shouldn't need an edge test, since has validated through other checks
     
     // Find difference between target and start
     const indexDifference = targetPieceIndex - startPieceIndex;
@@ -24,9 +27,15 @@ function axisDirectionTest(startPieceIndex, targetPieceIndex) {
 };
 
 function adjacencyTest(baseIndex, testIndex) {
-    const difference = Math.abs(testIndex - baseIndex);
+    const onLeftEdge = chessboardEdges.left.includes(baseIndex);
+    const onRightEdge = !onLeftEdge && chessboardEdges.right.includes(baseIndex);
+    if (onLeftEdge || onRightEdge) {
+        const signedDifference = testIndex - baseIndex;
+        if ((onLeftEdge && signedDifference === -1) || (onRightEdge && signedDifference === 1)) return false;
+    };
+    const absoluteDifference = Math.abs(testIndex - baseIndex);
     const adjacentDifferences = [1, 7, 8, 9];
-    return adjacentDifferences.includes(difference);
+    return adjacentDifferences.includes(absoluteDifference);
 }
 
 
