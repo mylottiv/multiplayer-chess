@@ -38,24 +38,20 @@ function validMovesStepper(boardState, validMoves, canCapture, moveset, pieceCol
 
 const validMovesetFunctions = {
     Pawn: (boardState, {numericalIndex, possibleMoveset}, color) => {   
-        const colorWhite = (color === 'White') ? true : false;
+        const colorWhite = (color === 'White');
         const validMovesTests = {
             capture: (testIndex, direction) => {
-                const operand = (direction === 'left') ? 7 : 9
-                const comparisonIndex = colorWhite ? numericalIndex + operand : numericalIndex - operand;
-                return (comparisonIndex === testIndex && (boardState[testIndex].Piece !== null && boardState[testIndex].Piece.color !== color));
+                const adjacencyOperand = (direction === 'left' && colorWhite) ? -1 : (direction === 'right' && colorWhite) ? 1 : (direction === 'left' && !colorWhite) ? 1 : -1;
+                const enPassantTestPiece = boardState[testIndex + adjacencyOperand].Piece;
+                const validEnPassantCapture = (enPassantTestPiece.type === 'Pawn' && enPassantTestPiece.color !== color && enPassantTestPiece.enPassant);
+                return ((boardState[testIndex].Piece !== null && boardState[testIndex].Piece.color !== color) || (boardState[testIndex].Piece === null && validEnPassantCapture));
             },
-            step: (testIndex, step) => {
-                const operand = (step === 'one') ? 8 : 16
-                const comparisonIndex = colorWhite ? numericalIndex + operand : numericalIndex - operand;
-                return (comparisonIndex === testIndex && boardState[testIndex].Piece === null);
-            }
-        }
+            step: (testIndex) => (boardState[testIndex].Piece === null)
+        };
         const validMovesNumerical = possibleMoveset.filter((moveIndex) => {
-            return (validMovesTests.step(moveIndex, 'one')) ?  true :
+            return (validMovesTests.step(moveIndex)) ?  true :
                 (validMovesTests.capture(moveIndex, 'left')) ? true :
-                    (validMovesTests.capture(moveIndex, 'right')) ? true :
-                        (validMovesTests.step(moveIndex, 'two')) ? true : false;
+                    (validMovesTests.capture(moveIndex, 'right')) ? true : false;
         });
         const moveset = validMovesNumerical.map(index => chessboardArrayEnum[index]);
         return {moveset, canCapture: null};
