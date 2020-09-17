@@ -13,9 +13,12 @@ The king does not end up in check. (True of any legal move.) [x]
 
 function castlingValidation(chessboard, playerColor, validPlayerMoves, validOpponentMoves) {
     const bottomRankIndexes = (playerColor === 'White') ? [0, 4, 7] : [56, 60, 63];
-    const queenSideRookCheck = ((chessboard[bottomRankIndexes[0]].Piece.type === 'Rook') && (chessboard[bottomRankIndexes[0]].Piece.canCastle));
-    const kingCheck = ((chessboard[bottomRankIndexes[1]].Piece.type === 'King') && (chessboard[bottomRankIndexes[1]].Piece.canCastle));
-    const kingSideRookCheck = ((chessboard[bottomRankIndexes[2]].Piece.type === 'Rook') && (chessboard[bottomRankIndexes[2]].Piece.canCastle));
+    const queenSideRook = (chessboard[bottomRankIndexes[0]].Piece !== null && chessboard[bottomRankIndexes[0]].Piece.type === 'Rook');
+    const kingStart = (chessboard[bottomRankIndexes[1]].Piece !== null && chessboard[bottomRankIndexes[1]].Piece.type === 'King');
+    const kingSideRook = (chessboard[bottomRankIndexes[2]].Piece !== null && chessboard[bottomRankIndexes[2]].Piece.type === 'Rook');
+    const queenSideRookCheck = (queenSideRook && chessboard[bottomRankIndexes[0]].Piece.canCastle);
+    const kingCheck = (kingStart  && chessboard[bottomRankIndexes[1]].Piece.canCastle);
+    const kingSideRookCheck = (kingSideRook && chessboard[bottomRankIndexes[2]].Piece.canCastle);
     let queenSideCastleValid, kingSideCastleValid;
     if (kingCheck) {
         if (queenSideRookCheck) {
