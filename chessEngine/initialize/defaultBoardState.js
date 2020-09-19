@@ -74,7 +74,8 @@ const chessboardDefaultState = [
 ];
 
 function newBoardInitializer(inputState) {
-    let outputState, value, key;
+    return () => {
+        let outputState, value, key;
 
     if (Array.isArray(inputState) || inputState === null ) return inputState;
 
@@ -86,6 +87,7 @@ function newBoardInitializer(inputState) {
     }
 
     return outputState;
+    }
 }
 
-module.exports = {chessboardDefaultState, newBoardInitializer};
+module.exports = {newBoard: newBoardInitializer(chessboardDefaultState)};
