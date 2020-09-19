@@ -1,5 +1,5 @@
 function movePiece(chessboard, startingIndex, targetIndex) {
-    console.log('movePiece', startingIndex, targetIndex);
+    // console.log('movePiece', startingIndex, targetIndex);
     const tempStartingState = chessboard[startingIndex].Piece;
     let tempTargetState = chessboard[targetIndex].Piece;
     chessboard[startingIndex].Piece = null;

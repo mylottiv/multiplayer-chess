@@ -1,16 +1,21 @@
-const {chessboardNotationEnum} = require('../initialize/chessboardEnums');
+const {chessboardNotationEnum, fileCharSet, fileRangeEnum, rankRangeEnum} = require('../initialize/chessboardEnums');
 const {movePiece} = require('./movePiece');
 
-function validateParsedMove(chessboard, validMoves, piece, targetNotation, startNotation = null) {
+function validateParsedMove(chessboard, validMoves, {piece, targetNotation, startingNotation}) {
     const allValidOptions =  validMoves.filter(({type, moveset}) => (type === piece && moveset.includes(targetNotation)));
-    console.log('All Valid Options', allValidOptions);
+    // console.log('All Valid Options', allValidOptions);
     let selectedPieceNotation;
     if (allValidOptions.length > 1) {
-        if (startNotation === null) return 'Multiple possible moves please specify file or rank of moving piece'
+        if (startingNotation === null) return 'Multiple possible moves please specify file or rank of moving piece'
         else {
-            // This has an error if the startNotation isn't accurate
-            // Also should keep an eye as to whether it will take exact coordinate or just rank/file
-            selectedPieceNotation = allValidOptions.find(({coordinates}) => (coordinates === startNotation)).coordinates;
+            const startFileCheck = (fileCharSet.includes(startingNotation));
+            const startingNotationRange = startFileCheck ? fileRangeEnum[startingNotation] : rankRangeEnum[startingNotation];
+            selectedPieceNotation = allValidOptions.find(({type, coordinates}) => {
+                const coordinateIndex = chessboardNotationEnum[coordinates];
+                const test = (startFileCheck) ? (diff) => diff % 8 === 0 : (diff) => diff <= 7
+                const inRange = startingNotationRange.every(rangeIndex => test(Math.abs(coordinateIndex - rangeIndex)))
+                return (type === piece) && inRange; 
+            }).coordinates;
         };
     }
     else {
