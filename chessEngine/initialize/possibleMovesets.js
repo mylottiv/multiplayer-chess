@@ -65,11 +65,12 @@ const knightMovePairFinder = (index, directionOne) => {
     let stepIndex = directionStepReference[directionOne](index);
     if (edgeChecker(stepIndex, directionOne)) return [];
     stepIndex = directionStepReference[directionOne](stepIndex);
-    if (edgeChecker(stepIndex, directionOne) || edgeChecker(stepIndex, directionTwoPair[0])) return [];
+    const pairArray = [];
     let moveIndexOne = directionStepReference[directionTwoPair[0]](stepIndex);
-    if (edgeChecker(stepIndex, directionTwoPair[1])) return [moveIndexOne];
+    if (!edgeChecker(stepIndex, directionTwoPair[0])) pairArray.push(moveIndexOne);
     let moveIndexTwo = directionStepReference[directionTwoPair[1]](stepIndex);
-    return [moveIndexOne, moveIndexTwo];
+    if (!edgeChecker(stepIndex, directionTwoPair[1])) pairArray.push(moveIndexTwo);
+    return pairArray;
 };
 
 const possibleMovesetFunctions = {
