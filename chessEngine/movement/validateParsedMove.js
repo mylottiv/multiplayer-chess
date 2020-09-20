@@ -1,7 +1,7 @@
 const {chessboardNotationEnum, fileCharSet, fileRangeEnum, rankRangeEnum} = require('../initialize/chessboardEnums');
 const {movePiece} = require('./movePiece');
 
-function validateParsedMove(chessboard, validMoves, {piece, targetNotation, startingNotation}) {
+function validateParsedMove(chessboard, validMoves, {piece, targetNotation, startingNotation, pawnPromotion}) {
     const allValidOptions =  validMoves.filter(({type, moveset}) => (type === piece && moveset.includes(targetNotation)));
     // console.log('All Valid Options', allValidOptions);
     let selectedPieceNotation;
@@ -21,7 +21,7 @@ function validateParsedMove(chessboard, validMoves, {piece, targetNotation, star
     else {
         selectedPieceNotation = allValidOptions[0].coordinates;
     }
-    return movePiece(chessboard, chessboardNotationEnum[selectedPieceNotation], chessboardNotationEnum[targetNotation]);
+    return movePiece(chessboard, chessboardNotationEnum[selectedPieceNotation], chessboardNotationEnum[targetNotation], pawnPromotion);
 }
 
 module.exports = {validateParsedMove};
