@@ -1,6 +1,6 @@
 const {newBoard} = require('./initialize/defaultBoardState');
 const {validateMoves} = require('./validateMoves');
-const {notationValidator} = require('./notationValidator');
+const {notationValidator} = require('./notationHandling/notationValidator');
 const {validateParsedMove} = require('./movement/validateParsedMove');
 
 const dummyInputMoves =  [
