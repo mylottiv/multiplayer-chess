@@ -1,16 +1,5 @@
 const { chessboardArrayEnum } = require("../initialize/chessboardEnums");
 
-/* 
-
-The castling must be kingside or queenside. [x]
-Neither the king nor the chosen rook has previously moved. [x]
-There are no pieces between the king and the chosen rook. [x]
-The king is not currently in check. [x] (if in check, run outOfCheckValidation, else run castlingValidation)
-The king does not pass through a square that is attacked by an enemy piece. [x]
-The king does not end up in check. (True of any legal move.) [x]
-
-*/
-
 function castlingValidation(chessboard, playerColor, validPlayerMoves, validOpponentMoves) {
     const bottomRankIndexes = (playerColor === 'White') ? [0, 4, 7] : [56, 60, 63];
     const queenSideRook = (chessboard[bottomRankIndexes[0]].Piece !== null && chessboard[bottomRankIndexes[0]].Piece.type === 'Rook');
