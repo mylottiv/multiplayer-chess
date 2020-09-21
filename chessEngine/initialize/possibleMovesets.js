@@ -1,6 +1,4 @@
-const {chessboardNotationEnum, chessboardArrayEnum} = require('./chessboardEnums');
-
-const {chessboardEdges} = require('./chessboardEdges');
+const {chessboardNotationEnum, chessboardArrayEnum, chessboardEdges} = require('./chessboardEnums');
 
 function straightPathFinder(index, direction) {
     if (chessboardEdges[direction].includes(index)) return [];

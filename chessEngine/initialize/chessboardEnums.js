@@ -67,38 +67,47 @@ const chessboardNotationEnum = {
 
 const chessboardArrayEnum = Object.entries(chessboardNotationEnum).map((entry) => entry[0]);
 
-const startingPieceEnum = {
-    K: 'King',
-    Q: 'Queen',
-    R: 'Rook',
-    N: 'Knight',
-    B: 'Bishop',
+const chessboardEdges = {
+    left: [
+        (() => chessboardNotationEnum['a1'])(),
+        (() => chessboardNotationEnum['a2'])(),
+        (() => chessboardNotationEnum['a3'])(),
+        (() => chessboardNotationEnum['a4'])(),
+        (() => chessboardNotationEnum['a5'])(),
+        (() => chessboardNotationEnum['a6'])(),
+        (() => chessboardNotationEnum['a7'])(),
+        (() => chessboardNotationEnum['a8'])(),
+    ],
+    right: [
+        (() => chessboardNotationEnum['h1'])(),
+        (() => chessboardNotationEnum['h2'])(),
+        (() => chessboardNotationEnum['h3'])(),
+        (() => chessboardNotationEnum['h4'])(),
+        (() => chessboardNotationEnum['h5'])(),
+        (() => chessboardNotationEnum['h6'])(),
+        (() => chessboardNotationEnum['h7'])(),
+        (() => chessboardNotationEnum['h8'])(),
+    ],
+    top: [
+        (() => chessboardNotationEnum['a8'])(),
+        (() => chessboardNotationEnum['b8'])(),
+        (() => chessboardNotationEnum['c8'])(),
+        (() => chessboardNotationEnum['d8'])(),
+        (() => chessboardNotationEnum['e8'])(),
+        (() => chessboardNotationEnum['f8'])(),
+        (() => chessboardNotationEnum['g8'])(),
+        (() => chessboardNotationEnum['h8'])(),
+    ],
+    bottom: [
+        (() => chessboardNotationEnum['a1'])(),
+        (() => chessboardNotationEnum['b1'])(),
+        (() => chessboardNotationEnum['c1'])(),
+        (() => chessboardNotationEnum['d1'])(),
+        (() => chessboardNotationEnum['e1'])(),
+        (() => chessboardNotationEnum['f1'])(),
+        (() => chessboardNotationEnum['g1'])(),
+        (() => chessboardNotationEnum['h1'])(),
+    ],
 };
 
-const fileCharSet = ['a','b','c','d','e','f','g','h'];
-
-const rankCharSet = ['1','2','3','4','5','6','7','8'];
-
-const rankRangeEnum = {
-    1: [0, 7],
-    2: [8, 15],
-    3: [16, 23],
-    4: [24, 31],
-    5: [32, 39],
-    6: [40, 47],
-    7: [48, 55],
-    8: [56, 63],
-};
-
-const fileRangeEnum = {
-    a: [0, 56],
-    b: [1, 57],
-    c: [2, 58],
-    d: [3, 59],
-    e: [4, 60],
-    f: [5, 61],
-    g: [6, 62],
-    h: [7, 63]
-}
-
-module.exports = {chessboardNotationEnum, chessboardArrayEnum, startingPieceEnum, fileCharSet, rankCharSet, rankRangeEnum, fileRangeEnum};
+module.exports = {chessboardNotationEnum, chessboardArrayEnum, chessboardEdges};

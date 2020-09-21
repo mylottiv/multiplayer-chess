@@ -1,5 +1,5 @@
 const {notationParser} = require("./notationParser");
-const {startingPieceEnum, rankCharSet, fileCharSet} = require('../initialize/chessboardEnums');
+const {startingPieceEnum, rankCharSet, fileCharSet} = require('../initialize/notationEnums');
 
 function notationValidator(rawNotation, playerColor) {
 
