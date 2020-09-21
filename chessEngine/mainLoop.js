@@ -3,7 +3,7 @@ const {validateMoves} = require('./validateMoves');
 const {notationValidator} = require('./notationHandling/notationValidator');
 const {validateParsedMove} = require('./movement/validateParsedMove');
 
-const dummyInputMoves =  [
+const dummyInputMovesOne =  [
     ['e4', 'e5'],
     ['Nf3', 'Nc6'],
     ['Bc4', 'Bc5'],
@@ -29,26 +29,95 @@ const dummyInputMoves =  [
     ['Bxc2', null]
 ]
 
+const dummyInputMovesTwo = [
+    ['e4', 'e5'],
+    ['Nf3', 'Nc6'],
+    ['Bc4', 'Bc5'],
+    ['b4', 'Bxb4'],
+    ['c3', 'Bc5'],
+    ['O-O', 'd6'],
+    ['d4', 'exd4'],
+    ['cxd4', 'Bb6'],
+    ['Bb2', 'Nf6'],
+    ['d5', 'Na5'],
+    ['Bd3', 'O-O'],
+    ['Nc3', 'Bg4'],
+    ['Ne2', 'Bxf3'],
+    ['gxf3', 'c5'],
+    ['Qd2', 'c4'],
+    ['Bc2', 'Rc8'],
+    ['Bc3', 'Rc5'],
+    ['Kh1', 'Ne8'],
+    ['Rg1', 'f6'],
+    ['Nf4', 'Nc7'],
+    ['Nh5', 'Rf7'],
+    ['Qh6', 'Qf8'],
+    ['Ba4', 'Kh8'],
+    ['Bxf6', null]
+]
+
+const checkmateDummyMoves = [
+    ['e4', 'c5'],
+    ['Nf3', 'Nc6'],
+    ['Bb5', 'g6'],
+    ['Bxc6', 'dxc6'],
+    ['d3', 'Bg7'],
+    ['h3', 'Nf6'],
+    ['Nc3', 'O-O'],
+    ['Be3', 'b6'],
+    ['Qd2', 'e5'],
+    ['Bh6', 'Qd6'],
+    ['O-O-O', 'a5'],
+    ['g4', 'a4'],
+    ['Kb1', 'Be6'],
+    ['Ne2', 'b5'],
+    ['Ng3', 'Rfd8'],
+    ['Bxg7', 'Kxg7'],
+    ['Qg5', 'Nd7'],
+    ['Nf5', 'Bxf5'],
+    ['gxf5', 'a3'],
+    ['b3', 'h6'],
+    ['Qg3', 'Kh7'],
+    ['Rhg1', 'Qf6'],
+    ['h4', 'gxf5'],
+    ['Qh3', 'f4'],
+    ['Rg5', 'Qe6'],
+    ['Rf5', 'Rg8'],
+    ['Ng5', 'hxg5'],
+    ['Rxf7', 'Qxf7'],
+    ['hxg5', 'Kg7'],
+    [ 'Qh6', null] 
+]
 // Test stores, will eventually be actual database entries once done to scale
 const chessBoardStateStore = [{StartingBoard: newBoard()}];
 const capturedPieces = {White: [], Black: []};
 
 function getValidatedMoves(chessboard) {
-    return {
+    const returnedValidatedMvoves = {
         White: validateMoves(chessboard, 'White'),
         Black: validateMoves(chessboard, 'Black')
-    };
+    }
+
+    return (returnedValidatedMvoves.White === 'Checkmate') 
+        ? 'White is in Checkmate!' 
+        : (returnedValidatedMvoves.Black === 'Checkmate') 
+            ? 'Black is in Checkmate!'
+            : returnedValidatedMvoves;
 }
 
 function mainLoop(startingColorTurn = 'WhiteTurn') {
 
     let currentBoardState = chessBoardStateStore[0].StartingBoard;
+    
+    let validatedMoves;
 
-    dummyInputMoves.forEach(([whiteMove, blackMove], turnCounter) => {
+    checkmateDummyMoves.forEach(([whiteMove, blackMove], turnCounter) => {
 
         chessBoardStateStore.push({WhiteTurn: [], BlackTurn: []});
 
-        let validatedMoves = getValidatedMoves(currentBoardState);
+        validatedMoves = getValidatedMoves(currentBoardState);
+
+        if (typeof validatedMoves === 'string') console.log(validatedMoves);
 
         const parsedWhiteNotation = notationValidator(whiteMove, 'White');
         console.log('White Move Turn:', turnCounter + 1, whiteMove, parsedWhiteNotation);
@@ -57,6 +126,8 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
         chessBoardStateStore[turnCounter].WhiteTurn = currentBoardState.map(square => {return {...square}});
 
         validatedMoves = getValidatedMoves(currentBoardState);
+
+        if (typeof validatedMoves === 'string') console.log(validatedMoves);
 
         const parsedBlackNotation = notationValidator(blackMove, 'Black'); 
         console.log('Black Move Turn:', turnCounter + 1, blackMove, parsedBlackNotation);

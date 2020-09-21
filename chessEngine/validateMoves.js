@@ -13,6 +13,7 @@ function validateMoves(BoardState, playerColor) {
     const initialOpponentMoves = initialValidatedMoves[opponentColor];
 
     const {playerCheck: inCheck, checkingPieces} = checkValidate(initialPlayerMoves, initialOpponentMoves);
+    if (inCheck) console.log(playerColor, 'in check');
     if (inCheck) {
         const finalValidatedMoves = outOfCheckValidation(initialPlayerMoves, checkingPieces);
         return (checkMateTest(finalValidatedMoves)) ? 'Checkmate' : finalValidatedMoves;
