@@ -79,14 +79,16 @@ const possibleMovesetFunctions = {
         const colorWhite = (color === 'White');
         const pawnLine = (colorWhite ? [8, 15] : [48, 55])
         const possibleMoves = [];
-        const captureLeftDiagonalIndex = (colorWhite ? index + 7 : index - 7);
-        const captureRightDiagonalIndex = (colorWhite ? index + 9 : index - 9);
-        const oneStepIndex = (colorWhite ? index + 8 : index - 8);
-        const twoStepIndex = (colorWhite ? index + 16 : index - 16);
+        const captureLeftDiagonalIndex = (colorWhite) ? index + 7 : index - 7;
+        const captureRightDiagonalIndex = (colorWhite) ? index + 9 : index - 9;
+        const oneStepIndex = (colorWhite) ? index + 8 : index - 8;
+        const twoStepIndex = (colorWhite) ? index + 16 : index - 16;
+        const leftDiagonalEdge = (colorWhite) ? 'left' : 'right';
+        const rightDiagonalEdge = (colorWhite) ? 'right' : 'left';
         possibleMoves.push(oneStepIndex);
         if (index >= pawnLine[0] && index <= pawnLine[1]) possibleMoves.push(twoStepIndex);
-        if (!chessboardEdges.left.includes(index)) possibleMoves.push(captureLeftDiagonalIndex);
-        if (!chessboardEdges.right.includes(index)) possibleMoves.push(captureRightDiagonalIndex);
+        if (!chessboardEdges[leftDiagonalEdge].includes(index)) possibleMoves.push(captureLeftDiagonalIndex);
+        if (!chessboardEdges[rightDiagonalEdge].includes(index)) possibleMoves.push(captureRightDiagonalIndex);
         return possibleMoves;
     },
     Rook: (index) => {
