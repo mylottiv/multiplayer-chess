@@ -1,5 +1,5 @@
 const {chessboardArrayEnum, chessboardNotationEnum} = require('../initialize/chessboardEnums');
-const {stepperOperations} = require('./stepperOperations');
+const {stepperOperations} = require('../initialize/stepperOperations');
 
 function axisTest(direction) {
     if (!direction.includes('-')) return (direction === 'up' || direction === 'down') ? 'vertical' : 'horizontal';
@@ -60,19 +60,18 @@ const validMovesetFunctions = {
         
         const validMoves = [];
         const canCapture = [];
-        const {vertical: vertOperation, horizontal: horizOperation} = stepperOperations;
-        const upMovesStepIndex = vertOperation(numericalIndex, 'up');
-        const downMovesStepIndex = vertOperation(numericalIndex, 'down');
-        const leftMovesStepIndex = horizOperation(numericalIndex, 'left');
-        const rightMovesStepIndex = horizOperation(numericalIndex, 'right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upMovesStepIndex, (val) => vertOperation(val, 'up'), 'up');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downMovesStepIndex, (val) => vertOperation(val, 'down'), 'down');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(leftMovesStepIndex, (val) => horizOperation(val, 'left'), 'left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(rightMovesStepIndex, (val) => horizOperation(val, 'right'), 'right');
+
+        const upMovesStepIndex = stepperOperations['up'](numericalIndex);
+        const downMovesStepIndex = stepperOperations['down'](numericalIndex);
+        const leftMovesStepIndex = stepperOperations['left'](numericalIndex);
+        const rightMovesStepIndex = stepperOperations['right'](numericalIndex);
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upMovesStepIndex, stepperOperations['up'], 'up');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downMovesStepIndex, stepperOperations['down'], 'down');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(leftMovesStepIndex, stepperOperations['left'], 'left');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(rightMovesStepIndex, stepperOperations['right'], 'right');
         return {moveset: validMoves, canCapture};
     },
     Knight: (boardState, {possibleMoveset}, color) => {
-    
         const validMoves = possibleMoveset.filter((moveIndex) => (boardState[moveIndex].Piece === null || boardState[moveIndex].Piece.color !== color));
         const moveset = validMoves.map((moveIndex) => chessboardArrayEnum[moveIndex]);
         return {moveset, canCapture: null};
@@ -81,16 +80,16 @@ const validMovesetFunctions = {
     Bishop: (boardState, {numericalIndex, possibleMoveset}, color) => {
         
         const validMoves = [];
-        const canCapture = [];
-        const {diagRightLeft: diagRightLeftOperation, diagLeftRight: diagLeftRightOperation} = stepperOperations;
-        const upRightMovesStepIndex = diagLeftRightOperation(numericalIndex, 'up-right');
-        const downRightMovesStepIndex = diagRightLeftOperation(numericalIndex, 'down-right');
-        const upLeftMovesStepIndex = diagRightLeftOperation(numericalIndex, 'up-left');
-        const downLeftMovesStepIndex = diagLeftRightOperation(numericalIndex, 'down-left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upRightMovesStepIndex, (val) => diagLeftRightOperation(val, 'up-right'), 'up-right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downRightMovesStepIndex, (val) => diagRightLeftOperation(val, 'down-right'), 'down-right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upLeftMovesStepIndex, (val) => diagRightLeftOperation(val, 'up-left'), 'up-left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downLeftMovesStepIndex, (val) => diagLeftRightOperation(val, 'down-left'), 'down-left');
+        const canCapture = []; 
+
+        const upRightMovesStepIndex = stepperOperations['up-right'](numericalIndex);
+        const downRightMovesStepIndex = stepperOperations['down-right'](numericalIndex);
+        const upLeftMovesStepIndex = stepperOperations['up-left'](numericalIndex);
+        const downLeftMovesStepIndex = stepperOperations['down-left'](numericalIndex);
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upRightMovesStepIndex, stepperOperations['up-right'], 'up-right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downRightMovesStepIndex, stepperOperations['down-right'], 'down-right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upLeftMovesStepIndex, stepperOperations['up-left'], 'up-left');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downLeftMovesStepIndex, stepperOperations['down-left'], 'down-left');
         return {moveset: validMoves, canCapture};
     
     },
@@ -98,23 +97,23 @@ const validMovesetFunctions = {
         
         const validMoves = [];
         const canCapture = [];
-        const {vertical: vertOperation, horizontal: horizOperation, diagLeftRight: diagLeftRightOperation, diagRightLeft: diagRightLeftOperation} = stepperOperations;
-        const upMovesStepIndex = vertOperation(numericalIndex, 'up');
-        const downMovesStepIndex = vertOperation(numericalIndex, 'down');
-        const leftMovesStepIndex = horizOperation(numericalIndex, 'left');
-        const rightMovesStepIndex = horizOperation(numericalIndex, 'right');
-        const upRightMovesStepIndex = diagLeftRightOperation(numericalIndex, 'up-right');
-        const downRightMovesStepIndex = diagRightLeftOperation(numericalIndex, 'down-right');
-        const upLeftMovesStepIndex = diagRightLeftOperation(numericalIndex, 'up-left');
-        const downLeftMovesStepIndex = diagLeftRightOperation(numericalIndex, 'down-left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upMovesStepIndex, (val) => vertOperation(val, 'up'), 'up');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downMovesStepIndex, (val) => vertOperation(val, 'down'), 'down');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(leftMovesStepIndex, (val) => horizOperation(val, 'left'), 'left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(rightMovesStepIndex, (val) => horizOperation(val, 'right'), 'right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upRightMovesStepIndex, (val) => diagLeftRightOperation(val, 'up-right'), 'up-right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downRightMovesStepIndex, (val) => diagRightLeftOperation(val, 'down-right'), 'down-right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upLeftMovesStepIndex, (val) => diagRightLeftOperation(val, 'up-left'), 'up-left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downLeftMovesStepIndex, (val) => diagLeftRightOperation(val, 'down-left'), 'down-left');
+
+        const upMovesStepIndex = stepperOperations['up'](numericalIndex);
+        const downMovesStepIndex = stepperOperations['down'](numericalIndex);
+        const leftMovesStepIndex = stepperOperations['left'](numericalIndex);
+        const rightMovesStepIndex = stepperOperations['right'](numericalIndex);
+        const upRightMovesStepIndex = stepperOperations['up-right'](numericalIndex);
+        const downRightMovesStepIndex = stepperOperations['down-right'](numericalIndex);
+        const upLeftMovesStepIndex = stepperOperations['up-left'](numericalIndex);
+        const downLeftMovesStepIndex = stepperOperations['down-left'](numericalIndex);
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upMovesStepIndex, stepperOperations['up'], 'up');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downMovesStepIndex, stepperOperations['down'], 'down');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(leftMovesStepIndex, stepperOperations['left'], 'left');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(rightMovesStepIndex, stepperOperations['right'], 'right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upRightMovesStepIndex, stepperOperations['up-right'], 'up-right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downRightMovesStepIndex, stepperOperations['down-right'], 'down-right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upLeftMovesStepIndex, stepperOperations['up-left'], 'up-left');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downLeftMovesStepIndex, stepperOperations['down-left'], 'down-left');
         return {moveset: validMoves, canCapture};
     
     },
@@ -123,23 +122,23 @@ const validMovesetFunctions = {
         
         const validMoves = [];
         const canCapture = [];
-        const {vertical: vertOperation, horizontal: horizOperation, diagLeftRight: diagLeftRightOperation, diagRightLeft: diagRightLeftOperation} = stepperOperations;
-        const upMovesStepIndex = vertOperation(numericalIndex, 'up');
-        const downMovesStepIndex = vertOperation(numericalIndex, 'down');
-        const leftMovesStepIndex = horizOperation(numericalIndex, 'left');
-        const rightMovesStepIndex = horizOperation(numericalIndex, 'right');
-        const upRightMovesStepIndex = diagLeftRightOperation(numericalIndex, 'up-right');
-        const downRightMovesStepIndex = diagRightLeftOperation(numericalIndex, 'down-right');
-        const upLeftMovesStepIndex = diagRightLeftOperation(numericalIndex, 'up-left');
-        const downLeftMovesStepIndex = diagLeftRightOperation(numericalIndex, 'down-left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upMovesStepIndex, (val) => vertOperation(val, 'up'), 'up');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downMovesStepIndex, (val) => vertOperation(val, 'down'), 'down');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(leftMovesStepIndex, (val) => horizOperation(val, 'left'), 'left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(rightMovesStepIndex, (val) => horizOperation(val, 'right'), 'right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upRightMovesStepIndex, (val) => diagLeftRightOperation(val, 'up-right'), 'up-right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downRightMovesStepIndex, (val) => diagRightLeftOperation(val, 'down-right'), 'down-right');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upLeftMovesStepIndex, (val) => diagRightLeftOperation(val, 'up-left'), 'up-left');
-        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downLeftMovesStepIndex, (val) => diagLeftRightOperation(val, 'down-left'), 'down-left');
+
+        const upMovesStepIndex = stepperOperations['up'](numericalIndex);
+        const downMovesStepIndex = stepperOperations['down'](numericalIndex);
+        const leftMovesStepIndex = stepperOperations['left'](numericalIndex);
+        const rightMovesStepIndex = stepperOperations['right'](numericalIndex);
+        const upRightMovesStepIndex = stepperOperations['up-right'](numericalIndex);
+        const downRightMovesStepIndex = stepperOperations['down-right'](numericalIndex);
+        const upLeftMovesStepIndex = stepperOperations['up-left'](numericalIndex);
+        const downLeftMovesStepIndex = stepperOperations['down-left'](numericalIndex);
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upMovesStepIndex, stepperOperations['up'], 'up');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downMovesStepIndex, stepperOperations['down'], 'down');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(leftMovesStepIndex, stepperOperations['left'], 'left');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(rightMovesStepIndex, stepperOperations['right'], 'right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upRightMovesStepIndex, stepperOperations['up-right'], 'up-right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downRightMovesStepIndex, stepperOperations['down-right'], 'down-right');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(upLeftMovesStepIndex, stepperOperations['up-left'], 'up-left');
+        validMovesStepper(boardState, validMoves, canCapture, possibleMoveset, color)(downLeftMovesStepIndex, stepperOperations['down-left'], 'down-left');
         return {moveset: validMoves, canCapture};
     
     },

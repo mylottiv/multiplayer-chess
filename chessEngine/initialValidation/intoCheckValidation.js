@@ -1,5 +1,5 @@
 const { allPossibleMoves } = require('../initialize/possibleMovesets');
-const { stepperOperations } = require('./stepperOperations');
+const { stepperOperations } = require('../initialize/stepperOperations');
 const { chessboardNotationEnum, chessboardEdges } = require('../initialize/chessboardEnums');
 
 function axisDirectionTest(startPieceIndex, targetPieceIndex) {
@@ -133,7 +133,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 
                 pieceBlockingCheck = true;
                 
-                let stepIndex = stepperOperations[threatenAxis](chessboardNotationEnum[playerPiece.coordinates], threatenDirection);
+                let stepIndex = stepperOperations[threatenDirection](chessboardNotationEnum[playerPiece.coordinates]);
 
                 while (stepIndex !== playerKingIndex) {
 
@@ -143,7 +143,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                         break;
                     }
                     
-                    stepIndex = stepperOperations[threatenAxis](stepIndex, threatenDirection);
+                    stepIndex = stepperOperations[threatenDirection](stepIndex);
                 }
             };
 
@@ -157,7 +157,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 
                 while (stepIndex !== playerKingIndex) {
                     
-                    stepIndex = stepperOperations[threatenAxis](stepIndex, threatenDirection);
+                    stepIndex = stepperOperations[threatenDirection](stepIndex);
 
                     onlyValidPlayerMoves.push(stepIndex);
 
