@@ -1,4 +1,4 @@
-const {chessboardEdges, rankRangeEnum} = require('../chessboardEnums');
+const {chessboardEdges, rankRangeEnum} = require('../constants/chessboardEnums');
 const {straightPathFinder, diagonalPathFinder, knightMovePairFinder, kingMoveFinder} = require('./pathFinders');
 
 function pawnGenerator(index, color) {

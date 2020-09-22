@@ -1,5 +1,5 @@
 const { validMovesetFunctions } = require('./validationFunctions');
-const { allPossibleMoves } = require("../constants/possibleMovesets");
+const { allPossibleMoves } = require("../possibleMovesets");
 
 function getValidMoveset(chessboardState, piece, index, color) {
     const pieceReference = (piece === 'Pawn') ? color + piece : piece;

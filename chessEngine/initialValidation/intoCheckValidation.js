@@ -1,4 +1,4 @@
-const { allPossibleMoves } = require('../constants/possibleMovesets');
+const { allPossibleMoves } = require('../possibleMovesets');
 const { stepperOperations } = require('../constants/stepperOperations');
 const { chessboardNotationEnum, chessboardEdges } = require('../constants/chessboardEnums');
 

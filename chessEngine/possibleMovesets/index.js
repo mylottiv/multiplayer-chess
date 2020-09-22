@@ -1,4 +1,4 @@
-const {chessboardArrayEnum} = require('../chessboardEnums');
+const {chessboardArrayEnum} = require('../constants/chessboardEnums');
 const {possibleMovesetGenerators} = require('./movesetGenerators');
 
 const allPossibleMoves = {

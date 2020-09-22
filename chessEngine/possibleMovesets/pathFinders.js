@@ -1,5 +1,5 @@
-const {chessboardEdges} = require('../chessboardEnums');
-const {stepperOperations} = require('../stepperOperations');
+const {chessboardEdges} = require('../constants/chessboardEnums');
+const {stepperOperations} = require('../constants/stepperOperations');
 
 function straightPathFinder(index, direction) {
     if (chessboardEdges[direction].includes(index)) return [];

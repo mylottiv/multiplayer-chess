@@ -1,4 +1,4 @@
-const {startingPieceEnum, rankCharSet, fileCharSet} = require('../initialize/notationEnums');
+const {startingPieceEnum, rankCharSet, fileCharSet} = require('../constants/notationEnums');
 
 function pawnPromotionParser(notation) {
 
