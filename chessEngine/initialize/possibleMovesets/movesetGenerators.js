@@ -1,60 +1,72 @@
-const {chessboardEdges} = require('../chessboardEnums');
+const {chessboardEdges, rankRangeEnum} = require('../chessboardEnums');
 const {straightPathFinder, diagonalPathFinder, knightMovePairFinder, kingMoveFinder} = require('./pathFinders');
 
 function pawnGenerator(index, color) {
-    if ((index >= 0 && index <= 7) || (index >= 56 && index <= 63)) return "Impossible Location for Pawn"
+
+    if (index <= rankRangeEnum['1'][1] || index >= rankRangeEnum['8'][0]) return "Impossible Location for Pawn";
+    
     const colorWhite = (color === 'White');
-    const pawnLine = (colorWhite ? [8, 15] : [48, 55])
-    const possibleMoves = [];
+    const pawnStartingRank = (colorWhite) ? rankRangeEnum['2'] : rankRangeEnum['7'];
+
     const captureLeftDiagonalIndex = (colorWhite) ? index + 7 : index - 7;
     const captureRightDiagonalIndex = (colorWhite) ? index + 9 : index - 9;
     const oneStepIndex = (colorWhite) ? index + 8 : index - 8;
     const twoStepIndex = (colorWhite) ? index + 16 : index - 16;
+    const possibleMoves = [oneStepIndex];
+
     const leftDiagonalEdge = (colorWhite) ? 'left' : 'right';
     const rightDiagonalEdge = (colorWhite) ? 'right' : 'left';
-    possibleMoves.push(oneStepIndex);
-    if (index >= pawnLine[0] && index <= pawnLine[1]) possibleMoves.push(twoStepIndex);
+
+    if (index >= pawnStartingRank[0] && index <= pawnStartingRank[1]) possibleMoves.push(twoStepIndex);
     if (!chessboardEdges[leftDiagonalEdge].includes(index)) possibleMoves.push(captureLeftDiagonalIndex);
     if (!chessboardEdges[rightDiagonalEdge].includes(index)) possibleMoves.push(captureRightDiagonalIndex);
     return possibleMoves;
 };
 
 function rookGenerator(index) {
-    const possibleLeftIndexes = straightPathFinder(index, 'left');
-    const possibleRightIndexes = straightPathFinder(index, 'right');
-    const possibleTopIndexes = straightPathFinder(index, 'top');
-    const possibleBottomIndexes = straightPathFinder(index, 'bottom');
-    const possibleMoves = [].concat(possibleLeftIndexes, possibleRightIndexes, possibleTopIndexes, possibleBottomIndexes);
+    const possibleIndexes = {
+        left: straightPathFinder(index, 'left'),
+        right: straightPathFinder(index, 'right'),
+        up: straightPathFinder(index, 'up'),
+        down: straightPathFinder(index, 'down'),
+    }
+    const possibleMoves = [].concat(Object.values(possibleIndexes).flat());
     return possibleMoves;
 };
 
 function knightGenerator(index) {
-    const possibleUpIndexes = knightMovePairFinder(index, 'top');
-    const possibleLeftIndexes = knightMovePairFinder(index, 'left');
-    const possibleRightIndexes = knightMovePairFinder(index, 'right');
-    const possibleDownIndexes = knightMovePairFinder(index, 'bottom');
-    const possibleMoves = [].concat(possibleUpIndexes, possibleDownIndexes, possibleLeftIndexes, possibleRightIndexes);
+    const possibleIndexes = {
+        left: knightMovePairFinder(index, 'left'),
+        right: knightMovePairFinder(index, 'right'),
+        up: knightMovePairFinder(index, 'up'),
+        down: knightMovePairFinder(index, 'down'),
+    }
+    const possibleMoves = [].concat(Object.values(possibleIndexes).flat());
     return possibleMoves;
 };
 
 function bishopGenerator(index) {
-    const possibleRightUpIndexes = diagonalPathFinder(index, 'right', 'top');
-    const possibleLeftUpIndexes = diagonalPathFinder(index, 'left', 'top');
-    const possibleRightDownIndexes = diagonalPathFinder(index, 'right', 'bottom');
-    const possibleLeftDownIndexes = diagonalPathFinder(index, 'left', 'bottom');
-    const possibleMoves = [].concat(possibleRightUpIndexes, possibleLeftUpIndexes, possibleRightDownIndexes, possibleLeftDownIndexes);
+    const possibleIndexes = {
+        'up-left': diagonalPathFinder(index, 'up', 'left'),
+        'down-left': diagonalPathFinder(index, 'down', 'left'),
+        'up-right': diagonalPathFinder(index, 'up', 'right'),
+        'down-right': diagonalPathFinder(index, 'down', 'right')
+    };
+    const possibleMoves = [].concat(Object.values(possibleIndexes).flat());
     return possibleMoves;
 };
 function queenGenerator(index) {
-    const possibleLeftIndexes = straightPathFinder(index, 'left');
-    const possibleRightIndexes = straightPathFinder(index, 'right');
-    const possibleUpIndexes = straightPathFinder(index, 'top');
-    const possibleDownIndexes = straightPathFinder(index, 'bottom');
-    const possibleLeftUpIndexes = diagonalPathFinder(index, 'left', 'top');
-    const possibleLeftDownIndexes = diagonalPathFinder(index, 'left', 'bottom');
-    const possibleRightUpIndexes = diagonalPathFinder(index, 'right', 'top');
-    const possibleRightDownIndexes = diagonalPathFinder(index, 'right', 'bottom');
-    const possibleMoves = [].concat(possibleLeftIndexes, possibleRightIndexes, possibleUpIndexes, possibleDownIndexes, possibleLeftUpIndexes, possibleLeftDownIndexes, possibleRightUpIndexes, possibleRightDownIndexes)
+    const possibleIndexes = {
+        left: straightPathFinder(index, 'left'),
+        right: straightPathFinder(index, 'right'),
+        up: straightPathFinder(index, 'up'),
+        down: straightPathFinder(index, 'down'),
+        'up-left': diagonalPathFinder(index, 'up', 'left'),
+        'down-left': diagonalPathFinder(index, 'down', 'left'),
+        'up-right': diagonalPathFinder(index, 'up', 'right'),
+        'down-right': diagonalPathFinder(index, 'down', 'right')
+    }
+    const possibleMoves = [].concat(Object.values(possibleIndexes).flat())
     return possibleMoves;
 }
 function kingGenerator(index) {
