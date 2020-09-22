@@ -1,12 +1,12 @@
-const {stepperOperations} = require('../initialValidation/stepperOperations');
+const {stepperOperations} = require('../initialize/stepperOperations');
 const { chessboardNotationEnum, chessboardArrayEnum } = require('../initialize/chessboardEnums');
 
 function checkPathStepper(kingCoordinates, checkingCoordinates, moveCoordinates, axis, direction) {
-    let nextIndex = stepperOperations[axis](chessboardNotationEnum[checkingCoordinates], direction);
+    let nextIndex = stepperOperations[direction](chessboardNotationEnum[checkingCoordinates]);
     let nextCoordinates = chessboardArrayEnum[nextIndex]
     while (kingCoordinates !== nextCoordinates) {
         if (moveCoordinates === nextCoordinates) return true;
-        nextIndex = stepperOperations[axis](nextIndex, direction);
+        nextIndex = stepperOperations[direction](nextIndex);
         nextCoordinates = chessboardArrayEnum[nextIndex];
     }
     return false;
@@ -25,7 +25,7 @@ function outOfCheckValidation(validPlayerMoves, opponentCheckingPieces) {
                 if (!moveInOpponentMoves && ['Queen', 'Bishop', 'Rook'].includes(type)) {
                     const checkThreat = canCapture.find(({coordinates: captureCordinates}) => captureCordinates === playerKingCoordinates);
                     if (!checkThreat) return;
-                    const nextPossibleCheckIndex = stepperOperations[checkThreat.axis](chessboardNotationEnum[playerKingCoordinates], checkThreat.direction);
+                    const nextPossibleCheckIndex = stepperOperations[checkThreat.direction](chessboardNotationEnum[playerKingCoordinates]);
                     const nextPossibleCheckCoordinates = chessboardArrayEnum[nextPossibleCheckIndex];
                     moveInOpponentCheckRange = (nextPossibleCheckCoordinates === kingMoveCoordinates);
                 }
