@@ -1,4 +1,4 @@
-const { chessboardArrayEnum } = require("../initialize/chessboardEnums");
+const { chessboardArrayEnum } = require("../constants/chessboardEnums");
 
 function castlingValidation(chessboard, playerColor, validPlayerMoves, validOpponentMoves) {
     const bottomRankIndexes = (playerColor === 'White') ? [0, 4, 7] : [56, 60, 63];

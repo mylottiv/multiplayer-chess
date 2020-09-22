@@ -1,5 +1,5 @@
-const {stepperOperations} = require('../initialize/stepperOperations');
-const { chessboardNotationEnum, chessboardArrayEnum } = require('../initialize/chessboardEnums');
+const {stepperOperations} = require('../constants/stepperOperations');
+const { chessboardNotationEnum, chessboardArrayEnum } = require('../constants/chessboardEnums');
 
 function checkPathStepper(kingCoordinates, checkingCoordinates, moveCoordinates, axis, direction) {
     let nextIndex = stepperOperations[direction](chessboardNotationEnum[checkingCoordinates]);

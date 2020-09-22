@@ -1,5 +1,5 @@
-const {chessboardArrayEnum, chessboardNotationEnum} = require('../initialize/chessboardEnums');
-const {stepperOperations} = require('../initialize/stepperOperations');
+const {chessboardArrayEnum, chessboardNotationEnum} = require('../constants/chessboardEnums');
+const {stepperOperations} = require('../constants/stepperOperations');
 
 function axisTest(direction) {
     if (!direction.includes('-')) return (direction === 'up' || direction === 'down') ? 'vertical' : 'horizontal';

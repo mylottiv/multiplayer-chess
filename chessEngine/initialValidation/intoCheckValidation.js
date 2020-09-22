@@ -1,6 +1,6 @@
-const { allPossibleMoves } = require('../initialize/possibleMovesets');
-const { stepperOperations } = require('../initialize/stepperOperations');
-const { chessboardNotationEnum, chessboardEdges } = require('../initialize/chessboardEnums');
+const { allPossibleMoves } = require('../constants/possibleMovesets');
+const { stepperOperations } = require('../constants/stepperOperations');
+const { chessboardNotationEnum, chessboardEdges } = require('../constants/chessboardEnums');
 
 function axisDirectionTest(startPieceIndex, targetPieceIndex) {
 

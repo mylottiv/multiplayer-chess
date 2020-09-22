@@ -1,5 +1,5 @@
 const {getValidMoveset} = require('../initialValidation/getValidMoveset');
-const {chessboardArrayEnum} = require('../initialize/chessboardEnums');
+const {chessboardArrayEnum} = require('../constants/chessboardEnums');
 
 function firstRoundValidation(chessboard) {
     const validWhiteMovesets = [];
