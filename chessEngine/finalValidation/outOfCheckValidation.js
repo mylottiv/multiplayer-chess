@@ -1,7 +1,7 @@
 const {stepperOperations} = require('../constants/stepperOperations');
 const { chessboardNotationEnum, chessboardArrayEnum } = require('../constants/chessboardEnums');
 
-function checkPathStepper(kingCoordinates, checkingCoordinates, moveCoordinates, axis, direction) {
+function checkPathStepper(kingCoordinates, checkingCoordinates, moveCoordinates, direction) {
     let nextIndex = stepperOperations[direction](chessboardNotationEnum[checkingCoordinates]);
     let nextCoordinates = chessboardArrayEnum[nextIndex]
     while (kingCoordinates !== nextCoordinates) {
@@ -35,8 +35,8 @@ function outOfCheckValidation(validPlayerMoves, opponentCheckingPieces) {
         else filterFunction = (playerMoveCoordinates) => {
             return opponentCheckingPieces.some(({type: testType, coordinates: checkingPieceCoordinates, moveset, canCapture}) => {
                 // Yes this is a duplicate in need of refactoring
-                const checkThreat = canCapture && canCapture.find(({coordinates: captureCordinates}) => captureCordinates === playerKingCoordinates);
-                const moveWouldBlockCheckPath = checkThreat && moveset.includes(playerMoveCoordinates) && checkPathStepper(playerKingCoordinates, checkingPieceCoordinates, playerMoveCoordinates, checkThreat.axis, checkThreat.direction);
+                const checkThreatDirection = canCapture && canCapture.find(({coordinates: captureCordinates}) => captureCordinates === playerKingCoordinates).direction;
+                const moveWouldBlockCheckPath = checkThreatDirection && moveset.includes(playerMoveCoordinates) && checkPathStepper(playerKingCoordinates, checkingPieceCoordinates, playerMoveCoordinates, checkThreatDirection);
                 return (opponentCheckingPieces.length === 1 && (playerMoveCoordinates === checkingPieceCoordinates || moveWouldBlockCheckPath))
             })
         }

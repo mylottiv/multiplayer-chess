@@ -1,11 +1,6 @@
 const {chessboardArrayEnum, chessboardNotationEnum} = require('../constants/chessboardEnums');
 const {stepperOperations} = require('../constants/stepperOperations');
 
-function axisTest(direction) {
-    if (!direction.includes('-')) return (direction === 'up' || direction === 'down') ? 'vertical' : 'horizontal';
-    else return (direction === 'down-left' || direction === 'up-right') ? 'diagLeftRight' : 'diagRightLeft';
-}
-
 function validMovesStepper(boardState, validMoves, canCapture, moveset, pieceColor) {
 
     return (stepIndex, operation, direction) => {
@@ -17,15 +12,13 @@ function validMovesStepper(boardState, validMoves, canCapture, moveset, pieceCol
             }
             else {
                 if (boardState[stepIndex].Piece.color !== pieceColor) {
-                    // console.log('Capture piece?', direction, axisTest(direction), pieceColor, {
+                    // console.log('Capture piece?', direction, pieceColor, {
                     //     coordinates: chessboardArrayEnum[stepIndex],
-                    //     axis: axisTest(direction),
                     //     direction
                     // });
                     validMoves.push(chessboardArrayEnum[stepIndex]);
                     canCapture.push({
                         coordinates: chessboardArrayEnum[stepIndex],
-                        axis: axisTest(direction),
                         direction
                     });
                 };

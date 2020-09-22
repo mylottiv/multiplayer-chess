@@ -2,7 +2,7 @@ const { allPossibleMoves } = require('../possibleMovesets');
 const { stepperOperations } = require('../constants/stepperOperations');
 const { chessboardNotationEnum, chessboardEdges } = require('../constants/chessboardEnums');
 
-function axisDirectionTest(startPieceIndex, targetPieceIndex) {
+function directionTest(startPieceIndex, targetPieceIndex) {
 
     // Shouldn't need an edge test, since has validated through other checks
     
@@ -15,14 +15,14 @@ function axisDirectionTest(startPieceIndex, targetPieceIndex) {
     // Check for the factor (7, 8, 9, 1)
     const differenceFactor = (indexDifference % 9 === 0) ? '9' : (indexDifference % 8 === 0) ? '8' : (indexDifference % 7 === 0) ? '7' : '1';
 
-    const axisReference = {
-        9: (positiveSign) => (positiveSign) ? {axis: 'diagLeftRight', direction:'up-right'} : {axis: 'diagLeftRight', direction:'down-left'},
-        8: (positiveSign) => (positiveSign) ? {axis: 'vertical', direction:'up'} : {axis: 'vertical', direction:'down'},
-        7: (positiveSign) => (positiveSign) ? {axis: 'diagRightLeft', direction:'up-left'} : {axis: 'diagRightLeft', direction:'down-right'},
-        1: (positiveSign) => (positiveSign) ? {axis: 'horizontal', direction:'right'} : {axis: 'horizontal', direction:'left'},
+    const directionReference = {
+        9: (positiveSign) => (positiveSign) ? 'up-right' : 'down-left',
+        8: (positiveSign) => (positiveSign) ? 'up' : 'down',
+        7: (positiveSign) => (positiveSign) ? 'up-left' : 'down-right',
+        1: (positiveSign) => (positiveSign) ? 'right' : 'left',
     }
 
-    return axisReference[differenceFactor](positiveDifference);
+    return directionReference[differenceFactor](positiveDifference);
 };
 
 function adjacencyTest(baseIndex, testIndex) {
@@ -99,7 +99,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
         // Filter moves that would result in a check by player's piece being removed
         else {
             
-            let threatenAxis, threatenDirection;
+            let threatenDirection;
 
             const capturingPieces = opponentMoves.filter(({canCapture}) => (canCapture !== null && canCapture.some(({coordinates: targetCoordinates}) => targetCoordinates === playerPiece.coordinates)));
                         
@@ -109,11 +109,10 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                 
                     if (allPossibleMoves[opponentPiece.type][chessboardNotationEnum[opponentPiece.coordinates]].possibleMoveset.includes(playerKingIndex)) {
                         const matchingCanCapture = opponentPiece.canCapture.find(({coordinates: testCoordinates}) => testCoordinates === playerPiece.coordinates)
-                        const captureAxisDirection = axisDirectionTest(chessboardNotationEnum[opponentPiece.coordinates], playerKingIndex);
+                        const captureDirection = directionTest(chessboardNotationEnum[opponentPiece.coordinates], playerKingIndex);
 
-                        if (captureAxisDirection.axis === matchingCanCapture.axis && captureAxisDirection.direction === matchingCanCapture.direction) {
-                            threatenAxis = captureAxisDirection.axis;
-                            threatenDirection = captureAxisDirection.direction;
+                        if (captureDirection === matchingCanCapture.direction) {
+                            threatenDirection = captureDirection;
                             return true;
                         }
                         else return false;
@@ -147,7 +146,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                 }
             };
 
-            // If not, then create a reference of possible moves along given axis and direction to filter piece moves by
+            // If not, then create a reference of possible moves along given direction to filter piece moves by
 
             if (pieceBlockingCheck) {
 
