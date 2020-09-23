@@ -87,7 +87,26 @@ const checkmateDummyMoves = [
     ['Rxf7', 'Qxf7'],
     ['hxg5', 'Kg7'],
     [ 'Qh6', null] 
-]
+];
+
+const extraDummyMoves = [
+    ['e4', 'e6'],
+    ['d4', 'd5'],
+    ['e5', 'c5'],
+    ['c3', 'cxd4'],
+    ['cxd4', 'Bb4'],
+    ['Nc3', 'Nc6'],
+    ['Nf3', 'Nge7'],
+    ['Bd3', 'O-O'],
+    ['Bxh7', 'Kxh7'],
+    ['Ng5', 'Kg6'],
+    ['h4', 'Nxd4'],
+    ['Qg4', 'f5'],
+    ['h5', 'Kh6'],
+    ['Nxe6', 'g5'],
+    ['hxg6', null]
+];
+
 // Test stores, will eventually be actual database entries once done to scale
 const chessBoardStateStore = [{StartingBoard: newBoard()}];
 const capturedPieces = {White: [], Black: []};
@@ -111,7 +130,7 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
     
     let validatedMoves;
 
-    checkmateDummyMoves.forEach(([whiteMove, blackMove], turnCounter) => {
+    extraDummyMoves.forEach(([whiteMove, blackMove], turnCounter) => {
 
         chessBoardStateStore.push({WhiteTurn: [], BlackTurn: []});
 
@@ -136,7 +155,7 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
         chessBoardStateStore[turnCounter].BlackTurn = currentBoardState.map(square => {return {...square}});
     });
 
-    console.log(chessBoardStateStore[22].WhiteTurn);
+    console.log(chessBoardStateStore[chessBoardStateStore.length - 2].BlackTurn);
 };
 
 mainLoop();
