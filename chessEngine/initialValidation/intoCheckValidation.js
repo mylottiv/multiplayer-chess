@@ -13,7 +13,13 @@ function directionTest(startPieceIndex, targetPieceIndex) {
     const positiveDifference = !(indexDifference <= -1);
 
     // Check for the factor (7, 8, 9, 1)
-    const differenceFactor = (indexDifference % 9 === 0) ? '9' : (indexDifference % 8 === 0) ? '8' : (indexDifference % 7 === 0) ? '7' : '1';
+    const differenceFactor = (indexDifference % 9 === 0) 
+        ? '9' 
+        : (indexDifference % 8 === 0) 
+            ? '8' 
+            : (indexDifference % 7 === 0) 
+                ? '7' 
+                : '1';
 
     const directionReference = {
         9: (positiveSign) => (positiveSign) ? 'up-right' : 'down-left',
@@ -26,13 +32,13 @@ function directionTest(startPieceIndex, targetPieceIndex) {
 };
 
 function adjacencyTest(baseIndex, testIndex) {
+    const signedDifference = testIndex - baseIndex;
+    
     const onLeftEdge = chessboardEdges.left.includes(baseIndex);
     const onRightEdge = !onLeftEdge && chessboardEdges.right.includes(baseIndex);
-    if (onLeftEdge || onRightEdge) {
-        const signedDifference = testIndex - baseIndex;
-        if ((onLeftEdge && signedDifference === -1) || (onRightEdge && signedDifference === 1)) return false;
-    };
-    const absoluteDifference = Math.abs(testIndex - baseIndex);
+    if ((onLeftEdge && signedDifference === -1) || (onRightEdge && signedDifference === 1)) return false;
+
+    const absoluteDifference = Math.abs(signedDifference);
     const adjacentDifferences = [1, 7, 8, 9];
     return adjacentDifferences.includes(absoluteDifference);
 }
@@ -72,7 +78,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 
                     const possibleOpponentMoves = allPossibleMoves[opponentPieceTypeRef][riskyOpponentPieceIndex].possibleMoveset;
                     
-                    if (possibleOpponentMoves.includes(chessboardNotationEnum[targetedPiece.coordinates])) {
+                    if (possibleOpponentMoves.includes(targetedPieceIndex)) {
                         if (riskyOpponentPiece.type === 'Pawn') {
                             const diagonals = [7, 9];
                             const riskyPawnCanCapture = diagonals.includes(Math.abs(riskyOpponentPieceIndex - targetedPieceIndex));
@@ -89,7 +95,15 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
             })
             
             filterFunction = (moveCoordinates) => {
-                const notInOpponentMoveset = (!opponentMoves.some(({moveset}) => moveset.includes(moveCoordinates)))
+                const notInOpponentMoveset = (!opponentMoves.some(({type, coordinates: opponentCoordinates, moveset}) => {
+                    const moveInMoveset =  moveset.includes(moveCoordinates);
+                    if (type === 'Pawn') {
+                        const pieceIndex = chessboardNotationEnum[opponentCoordinates];
+                        const moveIndex = chessboardNotationEnum[moveCoordinates];
+                        return (moveInMoveset && ![8, 16].includes(Math.abs(pieceIndex - moveIndex)));
+                    };
+                    return moveInMoveset;
+                }))
                 const notRiskyCapture = (!riskyCaptures.some(({coordinates: captureCoordinates}) => captureCoordinates === moveCoordinates))
                 return (notInOpponentMoveset && notRiskyCapture);
             };

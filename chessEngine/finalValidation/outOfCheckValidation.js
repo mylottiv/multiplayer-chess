@@ -19,10 +19,15 @@ function outOfCheckValidation(validPlayerMoves, opponentCheckingPieces) {
     const newValidPlayerMoves = validPlayerMoves.map((piece) => {
         let filterFunction;
         if (piece.type === 'King') filterFunction = (kingMoveCoordinates) => {
-            let moveInOpponentMoves, moveInOpponentCheckRange = false;
-            opponentCheckingPieces.forEach(({type, moveset, canCapture}) => {
+            let moveInOpponentMoves, moveInOpponentCheckRange, pawnStepMove = false;
+            opponentCheckingPieces.forEach(({type, coordinates: checkingOpponentCoordinates, moveset, canCapture}) => {
                 moveInOpponentMoves = moveset.includes(kingMoveCoordinates);
-                if (!moveInOpponentMoves && ['Queen', 'Bishop', 'Rook'].includes(type)) {
+                if (moveInOpponentMoves && type === 'Pawn') {
+                    const kingMoveIndex = chessboardNotationEnum[kingMoveCoordinates];
+                    const checkingPawnCoordinates = chessboardNotationEnum[checkingOpponentCoordinates];
+                    pawnStepMove = ([8, 16].includes(Math.abs(kingMoveIndex - checkingPawnCoordinates)));
+                }
+                else if (!moveInOpponentMoves && ['Queen', 'Bishop', 'Rook'].includes(type)) {
                     const checkThreat = canCapture.find(({coordinates: captureCordinates}) => captureCordinates === playerKingCoordinates);
                     if (!checkThreat) return;
                     const nextPossibleCheckIndex = stepperOperations[checkThreat.direction](chessboardNotationEnum[playerKingCoordinates]);
@@ -30,7 +35,7 @@ function outOfCheckValidation(validPlayerMoves, opponentCheckingPieces) {
                     moveInOpponentCheckRange = (nextPossibleCheckCoordinates === kingMoveCoordinates);
                 }
             })
-            return (!moveInOpponentMoves && !moveInOpponentCheckRange);
+            return ((!moveInOpponentMoves && !moveInOpponentCheckRange) || (pawnStepMove));
         }
         else filterFunction = (playerMoveCoordinates) => {
             return opponentCheckingPieces.some(({type: testType, coordinates: checkingPieceCoordinates, moveset, canCapture}) => {
