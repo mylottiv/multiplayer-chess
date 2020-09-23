@@ -15,7 +15,7 @@ function notationValidator(rawNotation, playerColor) {
 
     // Might need to step through from the end if a piece and/or '=' are detected
     // console.log('firstTest', (!rankCharSet.includes(rawNotation[notationEndIndex]) && !startingPieceEnum.includes(rawNotation[notationEndIndex])));
-    if (!rankCharSet.includes(rawNotation[notationEndIndex]) && !startingPieceEnum.includes(rawNotation[notationEndIndex])) return 'Invalid Notation';
+    if (!rankCharSet.includes(rawNotation[notationEndIndex]) && !Object.keys(startingPieceEnum).includes(rawNotation[notationEndIndex])) return 'Invalid Notation';
 
     // console.log('secondTest', (!fileCharSet.includes(rawNotation[notationEndIndex - 1]) && rawNotation[notationEndIndex - 1] !== '='));
     if (!fileCharSet.includes(rawNotation[notationEndIndex - 1]) && rawNotation[notationEndIndex - 1] !== '=') return 'Invalid Notation';
