@@ -24,7 +24,7 @@ function movePiece(chessboard, startingIndex, targetIndex, promotionPiece) {
         const rightPiece = (targetIndex !== enPassantRank[1]) ? chessboard[targetIndex + 1].Piece : null;
         const leftPieceCheck = (leftPiece && leftPiece.type === 'Pawn' && leftPiece.color !== startingPiece.color);
         const rightPieceCheck = (rightPiece && rightPiece.type === 'Pawn' && rightPiece.color !== startingPiece.color);
-        chessboard[targetIndex].Piece.enPassant = (leftPieceCheck || rightPieceCheck);
+        chessboard[targetIndex].Piece.enPassant = (leftPieceCheck || rightPieceCheck) ? true : false;
     }
     
     // En Passant capture test

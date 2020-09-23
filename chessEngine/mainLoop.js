@@ -107,6 +107,48 @@ const extraDummyMoves = [
     ['hxg6', null]
 ];
 
+const enPassantDummyMoves = [
+    ['e4', 'e6'], 
+    ['e5', 'd5'], 
+    ['exd6', 'Bxd6'], 
+    ['d4', 'Ne7'], 
+    ['Bd3', 'Ng6'], 
+    ['Nf3', 'Nc6'],
+    ['Nc3', 'Nb4'], 
+    ['Bc4', 'c6'], 
+    ['Ne4', 'Bc7'], 
+    ['O-O', 'O-O'], 
+    ['Re1', 'Nd5'],
+    ['Nc5', 'Nh4'], 
+    ['Ne5', 'Nf5'], 
+    ['c3', 'Bxe5'], 
+    ['Rxe5', 'Nf6'], 
+    ['Re1', 'h6'],
+    ['Qf3', 'Nd5'], 
+    ['Bb3', 'b6'], 
+    ['Nd3', 'Ba6'], 
+    ['Ne5', 'Rc8'], 
+    ['Bc2', 'Nfe7'],
+    ['Qg3', 'Kh8'], 
+    ['Qh4', 'Kg8'], 
+    ['Qg3', 'Kh8'], 
+    ['Qh3', 'Ng8'], 
+    ['Qh5', 'Rc7'],
+    ['Bd2', 'Ndf6'], 
+    ['Qh3', 'Nd5'], 
+    ['c4', 'Ndf6'], 
+    ['Rad1', 'Qe8'], 
+    ['Bf4', 'Rc8'],
+    ['Qa3', 'Bb7'], 
+    ['Qxa7', 'Ba8'], 
+    ['Qxb6', 'g5'], 
+    ['Bg3', 'Nd7'], 
+    ['Qb3', 'f5'],
+    ['f3', 'Kg7'], 
+    ['c5', 'Ndf6'], 
+    ['Nc4', null]
+]
+
 // Test stores, will eventually be actual database entries once done to scale
 const chessBoardStateStore = [{StartingBoard: newBoard()}];
 const capturedPieces = {White: [], Black: []};
@@ -128,9 +170,11 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
 
     let currentBoardState = chessBoardStateStore[0].StartingBoard;
     
-    let validatedMoves;
+    let validatedMoves, turnCounter;
 
-    extraDummyMoves.forEach(([whiteMove, blackMove], turnCounter) => {
+    enPassantDummyMoves.forEach(([whiteMove, blackMove], turnIndex) => {
+
+        turnCounter = turnIndex + 1;
 
         chessBoardStateStore.push({WhiteTurn: [], BlackTurn: []});
 
@@ -139,7 +183,7 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
         if (typeof validatedMoves === 'string') console.log(validatedMoves);
 
         const parsedWhiteNotation = notationValidator(whiteMove, 'White');
-        console.log('White Move Turn:', turnCounter + 1, whiteMove, parsedWhiteNotation);
+        console.log('White Move Turn:', turnCounter, whiteMove, parsedWhiteNotation);
         const capturedByWhite = (parsedWhiteNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validatedMoves.White, parsedWhiteNotation);
         if (capturedByWhite) capturedPieces.White.push(capturedByWhite);
         chessBoardStateStore[turnCounter].WhiteTurn = currentBoardState.map(square => {return {...square}});
@@ -149,13 +193,13 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
         if (typeof validatedMoves === 'string') console.log(validatedMoves);
 
         const parsedBlackNotation = notationValidator(blackMove, 'Black'); 
-        console.log('Black Move Turn:', turnCounter + 1, blackMove, parsedBlackNotation);
+        console.log('Black Move Turn:', turnCounter, blackMove, parsedBlackNotation);
         const capturedByBlack = (parsedBlackNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validatedMoves.Black, parsedBlackNotation);
         if (capturedByBlack) capturedPieces.Black.push(capturedByBlack);
         chessBoardStateStore[turnCounter].BlackTurn = currentBoardState.map(square => {return {...square}});
     });
 
-    console.log(chessBoardStateStore[chessBoardStateStore.length - 2].BlackTurn);
+    console.log(chessBoardStateStore[turnCounter].BlackTurn);
 };
 
 mainLoop();
