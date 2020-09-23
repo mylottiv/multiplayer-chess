@@ -1,4 +1,4 @@
-const { validMovesetFunctions } = require('./validationFunctions');
+const { validMovesetFunctions } = require('./movesetValidators');
 const { allPossibleMoves } = require("../possibleMovesets");
 
 function getValidMoveset(chessboardState, piece, index, color) {

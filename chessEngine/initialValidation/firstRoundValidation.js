@@ -1,4 +1,4 @@
-const {getValidMoveset} = require('../initialValidation/getValidMoveset');
+const {getValidMoveset} = require('../validationFunctions');
 const {chessboardArrayEnum} = require('../constants/chessboardEnums');
 
 function firstRoundValidation(chessboard) {
