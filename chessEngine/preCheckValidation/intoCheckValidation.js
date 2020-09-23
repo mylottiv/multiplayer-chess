@@ -3,21 +3,14 @@ const { stepperOperations } = require('../constants/stepperOperations');
 const { chessboardNotationEnum, chessboardEdges } = require('../constants/chessboardEnums');
 
 function directionTest(startPieceIndex, targetPieceIndex) {
-
-    // Shouldn't need an edge test, since has validated through other checks
     
-    // Find difference between target and start
-    const indexDifference = targetPieceIndex - startPieceIndex;
-
-    // Check for the sign
-    const positiveDifference = !(indexDifference <= -1);
-
-    // Check for the factor (7, 8, 9, 1)
-    const differenceFactor = (indexDifference % 9 === 0) 
+    const signedDifference = targetPieceIndex - startPieceIndex;
+    const positiveDifference = (signedDifference > 0);
+    const differenceFactor = (signedDifference % 9 === 0) 
         ? '9' 
-        : (indexDifference % 8 === 0) 
+        : (signedDifference % 8 === 0) 
             ? '8' 
-            : (indexDifference % 7 === 0) 
+            : (signedDifference % 7 === 0) 
                 ? '7' 
                 : '1';
 
@@ -32,22 +25,66 @@ function directionTest(startPieceIndex, targetPieceIndex) {
 };
 
 function adjacencyTest(baseIndex, testIndex) {
-    const signedDifference = testIndex - baseIndex;
-    
-    const onLeftEdge = chessboardEdges.left.includes(baseIndex);
-    const onRightEdge = !onLeftEdge && chessboardEdges.right.includes(baseIndex);
-    if ((onLeftEdge && signedDifference === -1) || (onRightEdge && signedDifference === 1)) return false;
+
+    const signedDifference = testIndex - baseIndex; 
+
+    let edgeTests = {
+        left: chessboardEdges.left.includes(baseIndex),
+        right: !chessboardEdges.left.includes(baseIndex) && chessboardEdges.right.includes(baseIndex),
+        up: chessboardEdges.up.includes(baseIndex),
+        down: !chessboardEdges.up.includes(baseIndex) && chessboardEdges.down.includes(baseIndex)
+    };
+
+    const offBoardTests = [
+        (edgeTests.left && signedDifference === -1),
+        (edgeTests.right && signedDifference === 1),
+        (edgeTests.up && signedDifference === 8),
+        (edgeTests.down && signedDifference === -8)
+    ]
+
+    if (offBoardTests.includes(true)) return false;
 
     const absoluteDifference = Math.abs(signedDifference);
     const adjacentDifferences = [1, 7, 8, 9];
     return adjacentDifferences.includes(absoluteDifference);
-}
+};
 
+function riskyCapturesFilter(color, opponentMoves) {
+
+    return (targetedPiece) => {
+    
+        const targetedPieceIndex = chessboardNotationEnum[targetedPiece.coordinates];
+
+        return opponentMoves.some(riskyPiece => {
+            
+            const riskyPieceIndex = chessboardNotationEnum[riskyPiece.coordinates];
+            
+            const riskyPieceRef = (riskyPiece.type === 'Pawn') ? color + riskyPiece.type : riskyPiece.type;
+
+            const possibleOpponentMoves = allPossibleMoves[riskyPieceRef][riskyPieceIndex].possibleMoveset;
+            
+            if (possibleOpponentMoves.includes(targetedPieceIndex)) {
+                const riskyTests = {
+                    Pawn: () => [7, 9].includes(Math.abs(riskyPieceIndex - targetedPieceIndex)),
+                    Knight: () => true,
+                }
+                if (!Object.keys(riskyTests).includes(riskyPiece.type)) return riskyTests[riskyPiece.type];
+                else {
+                    const adjacentIndexes = adjacencyTest(targetedPieceIndex, riskyPieceIndex);
+                    const adjacentMovesTest = ({validMove}) => adjacencyTest(targetedPieceIndex, chessboardNotationEnum[validMove]);
+                    const adjacentRiskyMoves = riskyPiece.moveset.some(adjacentMovesTest);
+                    const nextToMoveOrPiece = (adjacentIndexes || adjacentRiskyMoves);
+                    return (nextToMoveOrPiece);
+                }
+            };
+            return false;
+        })
+    }
+}
 
 
 function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 
-    // Find Player King Index
     const playerKingIndex = chessboardNotationEnum[playerMoves.find(({type}) => type === 'King').coordinates]
 
     // For each player piece
@@ -58,44 +95,13 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
         // Filter moves that would put King into opponent Valid Moveset
         if (playerPiece.type === 'King') {
 
-            const playerColor = chessboard[playerKingIndex].Piece.color;
-
-            const opponentColor = (playerColor === 'White') ? 'Black' : 'White';
-            
-            const kingCanCapture = playerPiece.canCapture;
+            const kingCanCapture = playerPiece.canCapture;       
+            const opponentColor = (chessboard[playerKingIndex].Piece.color === 'White') ? 'Black' : 'White';
+            const riskyCaptures = kingCanCapture.filter(riskyCapturesFilter(opponentColor, opponentMoves));
             
             // If opponentColor piece can be captured by King, is in an opponent piece's possible moveset, and is adjacent to a valid move or said piece, then filter out
-            
-            const riskyCaptures = kingCanCapture.filter(targetedPiece => {
-
-                const targetedPieceIndex = chessboardNotationEnum[targetedPiece.coordinates];
-
-                return opponentMoves.some(riskyOpponentPiece => {
-                    
-                    const riskyOpponentPieceIndex = chessboardNotationEnum[riskyOpponentPiece.coordinates];
-                    
-                    const opponentPieceTypeRef = (riskyOpponentPiece.type === 'Pawn') ? opponentColor + riskyOpponentPiece.type : riskyOpponentPiece.type
-
-                    const possibleOpponentMoves = allPossibleMoves[opponentPieceTypeRef][riskyOpponentPieceIndex].possibleMoveset;
-                    
-                    if (possibleOpponentMoves.includes(targetedPieceIndex)) {
-                        if (riskyOpponentPiece.type === 'Pawn') {
-                            const diagonals = [7, 9];
-                            const riskyPawnCanCapture = diagonals.includes(Math.abs(riskyOpponentPieceIndex - targetedPieceIndex));
-                            return (riskyPawnCanCapture);
-                        }
-                        else if (riskyOpponentPiece.type !== 'Knight') {
-                            const nextToMoveOrPiece = (adjacencyTest(targetedPieceIndex, riskyOpponentPieceIndex) || riskyOpponentPiece.moveset.some(({validMove}) => adjacencyTest(targetedPieceIndex, chessboardNotationEnum[validMove])));
-                            return (nextToMoveOrPiece);
-                        }
-                        // If canCapture piece is in Knight's possible moveset, then capturing said piece would place King in check by Knight
-                        else return (riskyOpponentPiece.type === 'Knight');
-                    }
-                })
-            })
-            
             filterFunction = (moveCoordinates) => {
-                const notInOpponentMoveset = (!opponentMoves.some(({type, coordinates: opponentCoordinates, moveset}) => {
+                const inOpponentMoveset = opponentMoves.some(({type, coordinates: opponentCoordinates, moveset}) => {
                     const moveInMoveset =  moveset.includes(moveCoordinates);
                     if (type === 'Pawn') {
                         const pieceIndex = chessboardNotationEnum[opponentCoordinates];
@@ -103,9 +109,9 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                         return (moveInMoveset && ![8, 16].includes(Math.abs(pieceIndex - moveIndex)));
                     };
                     return moveInMoveset;
-                }))
-                const notRiskyCapture = (!riskyCaptures.some(({coordinates: captureCoordinates}) => captureCoordinates === moveCoordinates))
-                return (notInOpponentMoveset && notRiskyCapture);
+                })
+                if (inOpponentMoveset) return false;
+                else return !riskyCaptures.some(({coordinates}) => coordinates === moveCoordinates)
             };
             
         }    
@@ -115,15 +121,23 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
             
             let threatenDirection;
 
-            const capturingPieces = opponentMoves.filter(({canCapture}) => (canCapture !== null && canCapture.some(({coordinates: targetCoordinates}) => targetCoordinates === playerPiece.coordinates)));
+            const capturingPieces = opponentMoves.filter(({canCapture}) => 
+                {
+                    return (canCapture !== null && canCapture.some(({coordinates}) => coordinates === playerPiece.coordinates))
+                });
                         
             const threateningPiece = capturingPieces.find(opponentPiece => {
             
-                if (opponentPiece.type !== 'King' || opponentPiece.type !== 'Pawn' || opponentPiece.type !== 'Knight') {
+                if (['King', 'Pawn', 'Knight'].includes(opponentPiece.type)) return false
                 
-                    if (allPossibleMoves[opponentPiece.type][chessboardNotationEnum[opponentPiece.coordinates]].possibleMoveset.includes(playerKingIndex)) {
-                        const matchingCanCapture = opponentPiece.canCapture.find(({coordinates: testCoordinates}) => testCoordinates === playerPiece.coordinates)
-                        const captureDirection = directionTest(chessboardNotationEnum[opponentPiece.coordinates], playerKingIndex);
+                else {
+
+                    const opponentType = opponentPiece.type;
+                    const opponentIndex = chessboardNotationEnum[opponentPiece.coordinates];
+
+                    if (allPossibleMoves[opponentType][opponentIndex].possibleMoveset.includes(playerKingIndex)) {
+                        const matchingCanCapture = opponentPiece.canCapture.find(({coordinates}) => coordinates === playerPiece.coordinates)
+                        const captureDirection = directionTest(opponentIndex, playerKingIndex);
 
                         if (captureDirection === matchingCanCapture.direction) {
                             threatenDirection = captureDirection;
@@ -132,9 +146,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                         else return false;
                     }
                 
-                }
-                
-                else return false;
+                };
             
             });
 
