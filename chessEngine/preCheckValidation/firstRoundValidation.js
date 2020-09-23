@@ -1,4 +1,4 @@
-const {getValidMoveset} = require('../initialValidation');
+const {getInitialValidMoveset} = require('../initialValidation');
 const {chessboardArrayEnum} = require('../constants/chessboardEnums');
 
 function firstRoundValidation(chessboard) {
@@ -6,7 +6,7 @@ function firstRoundValidation(chessboard) {
     const validBlackMovesets = [];
     chessboard.forEach(({Piece}, index) => {
         if (Piece !== null) {
-            const {moveset, canCapture} = getValidMoveset(chessboard, Piece.type, index, Piece.color)
+            const {moveset, canCapture} = getInitialValidMoveset(chessboard, Piece.type, index, Piece.color)
             const movesetInfo = {
                 type: Piece.type, 
                 coordinates: chessboardArrayEnum[index],
