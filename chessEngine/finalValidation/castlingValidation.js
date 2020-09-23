@@ -5,12 +5,12 @@ function castlingValidation(chessboard, playerColor, validPlayerMoves, validOppo
     const queenSideRook = (chessboard[bottomRankIndexes[0]].Piece !== null && chessboard[bottomRankIndexes[0]].Piece.type === 'Rook');
     const kingStart = (chessboard[bottomRankIndexes[1]].Piece !== null && chessboard[bottomRankIndexes[1]].Piece.type === 'King');
     const kingSideRook = (chessboard[bottomRankIndexes[2]].Piece !== null && chessboard[bottomRankIndexes[2]].Piece.type === 'Rook');
-    const queenSideRookCheck = (queenSideRook && chessboard[bottomRankIndexes[0]].Piece.canCastle);
-    const kingCheck = (kingStart  && chessboard[bottomRankIndexes[1]].Piece.canCastle);
-    const kingSideRookCheck = (kingSideRook && chessboard[bottomRankIndexes[2]].Piece.canCastle);
+    const queenSideRookTest = (queenSideRook && chessboard[bottomRankIndexes[0]].Piece.canCastle);
+    const kingTest = (kingStart  && chessboard[bottomRankIndexes[1]].Piece.canCastle);
+    const kingSideRookTest = (kingSideRook && chessboard[bottomRankIndexes[2]].Piece.canCastle);
     let queenSideCastleValid, kingSideCastleValid;
-    if (kingCheck) {
-        if (queenSideRookCheck) {
+    if (kingTest) {
+        if (queenSideRookTest) {
             let noBlockingPieces = true;
             let noPotentialCheck = true;
             let kingTargetIndex = bottomRankIndexes[1] - 2;
@@ -22,7 +22,7 @@ function castlingValidation(chessboard, playerColor, validPlayerMoves, validOppo
             }
             queenSideCastleValid = (noBlockingPieces && noPotentialCheck);
         }
-        if (kingSideRookCheck) {
+        if (kingSideRookTest) {
             let noBlockingPieces = true;
             let noPotentialCheck = true;
             let kingTargetIndex = bottomRankIndexes[1] + 2;
