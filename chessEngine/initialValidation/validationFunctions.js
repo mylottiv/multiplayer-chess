@@ -34,10 +34,11 @@ const validMovesetFunctions = {
         const colorWhite = (color === 'White');
         const validMovesTests = {
             capture: (testIndex, direction) => {
+                const testCapturePiece = boardState[testIndex].Piece;
                 const adjacencyOperand = (direction === 'left' && colorWhite) ? -1 : (direction === 'right' && colorWhite) ? 1 : (direction === 'left' && !colorWhite) ? 1 : -1;
-                const enPassantTestPiece = boardState[testIndex + adjacencyOperand].Piece;
+                const enPassantTestPiece = boardState[numericalIndex + adjacencyOperand].Piece;
                 const validEnPassantCapture = (enPassantTestPiece !== null && enPassantTestPiece.type === 'Pawn' && enPassantTestPiece.color !== color && enPassantTestPiece.enPassant);
-                return ((boardState[testIndex].Piece !== null && boardState[testIndex].Piece.color !== color) || (boardState[testIndex].Piece === null && validEnPassantCapture));
+                return ((testCapturePiece !== null && testCapturePiece.color !== color) || (testCapturePiece === null && validEnPassantCapture));
             },
             step: (testIndex) => (boardState[testIndex].Piece === null)
         };
