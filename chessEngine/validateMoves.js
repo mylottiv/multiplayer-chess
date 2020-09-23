@@ -1,4 +1,4 @@
-const {initialValidation} = require('./initialValidation');
+const {initialValidation} = require('./preCheckValidation');
 const {checkValidate} = require('./finalValidation/checkValidate');
 const {outOfCheckValidation} = require('./finalValidation/outOfCheckValidation');
 const {castlingValidation} = require('./finalValidation/castlingValidation');

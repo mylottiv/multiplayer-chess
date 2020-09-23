@@ -1,13 +1,10 @@
-const {firstRoundValidation} = require('./firstRoundValidation');
-const {intoCheckValidation} = require('./intoCheckValidation');
+const { validMovesetFunctions } = require('./movesetValidators');
+const { allPossibleMoves } = require("../possibleMovesets");
 
-function initialValidation(BoardState) {
-    const firstRoundValidMoves = firstRoundValidation(BoardState);
-    const secondRoundValidMoves = {
-        White: intoCheckValidation(BoardState, firstRoundValidMoves.White, firstRoundValidMoves.Black),
-        Black: intoCheckValidation(BoardState, firstRoundValidMoves.Black, firstRoundValidMoves.White)
-    };
-    return secondRoundValidMoves;
-}
+function getValidMoveset(chessboardState, piece, index, color) {
+    const pieceReference = (piece === 'Pawn') ? color + piece : piece;
+    const possibleMoves = allPossibleMoves[pieceReference];
+    return validMovesetFunctions[piece](chessboardState, possibleMoves[index], color)
+};
 
-module.exports = {initialValidation};
+module.exports = {getValidMoveset};
