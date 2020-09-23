@@ -1,7 +1,7 @@
 const {firstRoundValidation} = require('./firstRoundValidation');
 const {intoCheckValidation} = require('./intoCheckValidation');
 
-function initialValidation(BoardState) {
+function preCheckValidation(BoardState) {
     const firstRoundValidMoves = firstRoundValidation(BoardState);
     const secondRoundValidMoves = {
         White: intoCheckValidation(BoardState, firstRoundValidMoves.White, firstRoundValidMoves.Black),
@@ -10,4 +10,4 @@ function initialValidation(BoardState) {
     return secondRoundValidMoves;
 }
 
-module.exports = {initialValidation};
+module.exports = {preCheckValidation};

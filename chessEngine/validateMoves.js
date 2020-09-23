@@ -1,4 +1,4 @@
-const {initialValidation} = require('./preCheckValidation');
+const {preCheckValidation} = require('./preCheckValidation');
 const {checkValidate} = require('./finalValidation/checkValidate');
 const {outOfCheckValidation} = require('./finalValidation/outOfCheckValidation');
 const {castlingValidation} = require('./finalValidation/castlingValidation');
@@ -8,18 +8,18 @@ function validateMoves(BoardState, playerColor) {
 
     const opponentColor = (playerColor === 'White') ? 'Black' : 'White';
 
-    const initialValidatedMoves = initialValidation(BoardState)
-    const initialPlayerMoves = initialValidatedMoves[playerColor];
-    const initialOpponentMoves = initialValidatedMoves[opponentColor];
+    const preCheckValidatedMoves = preCheckValidation(BoardState)
+    const preCheckPlayerMoves = preCheckValidatedMoves[playerColor];
+    const preCheckOpponentMoves = preCheckValidatedMoves[opponentColor];
 
-    const {playerCheck: inCheck, checkingPieces} = checkValidate(initialPlayerMoves, initialOpponentMoves);
+    const {playerCheck: inCheck, checkingPieces} = checkValidate(preCheckPlayerMoves, preCheckOpponentMoves);
     if (inCheck) console.log(playerColor, 'in check');
     if (inCheck) {
-        const finalValidatedMoves = outOfCheckValidation(initialPlayerMoves, checkingPieces);
+        const finalValidatedMoves = outOfCheckValidation(preCheckPlayerMoves, checkingPieces);
         return (checkMateTest(finalValidatedMoves)) ? 'Checkmate' : finalValidatedMoves;
     }
     else {
-        const finalValidatedMoves = castlingValidation(BoardState, playerColor, initialPlayerMoves, initialOpponentMoves);
+        const finalValidatedMoves = castlingValidation(BoardState, playerColor, preCheckPlayerMoves, preCheckOpponentMoves);
         return finalValidatedMoves
     }
 };
