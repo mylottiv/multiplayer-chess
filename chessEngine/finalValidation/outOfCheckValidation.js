@@ -1,50 +1,62 @@
 const {stepperOperations} = require('../constants/stepperOperations');
-const { chessboardNotationEnum, chessboardArrayEnum } = require('../constants/chessboardEnums');
+const { chessboardNotationEnum } = require('../constants/chessboardEnums');
+const {matchCoordinates} =  require('../preCheckValidation/intoCheckValidation/callbackUtils');
 
-function checkPathStepper(kingCoordinates, checkingCoordinates, moveCoordinates, direction) {
-    let nextIndex = stepperOperations[direction](chessboardNotationEnum[checkingCoordinates]);
-    let nextCoordinates = chessboardArrayEnum[nextIndex]
-    while (kingCoordinates !== nextCoordinates) {
-        if (moveCoordinates === nextCoordinates) return true;
-        nextIndex = stepperOperations[direction](nextIndex);
-        nextCoordinates = chessboardArrayEnum[nextIndex];
+function checkPathStepper(kingIndex, checkingPieceIndex, moveIndex, direction) {
+    const stepOperation = direction && stepperOperations[direction];
+    let nextIndex = stepOperation(checkingPieceIndex);
+    while (kingIndex !== nextIndex) {
+        if (moveIndex === nextIndex) return true;
+        nextIndex = stepOperation(nextIndex);
     }
     return false;
-}
+};
+
+function checkBlockTest({coordinates: checkingOpponentCoordinates, moveset, canCapture}, kingCoordinates, moveCoordinates) {
+    // No edge test for Pawn, but since Pawn check threat is only diagonal, that should be ok?
+    const kingIndex = chessboardNotationEnum[kingCoordinates];
+    const moveIndex = chessboardNotationEnum[moveCoordinates];
+    const checkingOpponentIndex = chessboardNotationEnum[checkingOpponentCoordinates];
+    const checkThreatDirection = canCapture && canCapture.find(matchCoordinates(kingCoordinates)).direction;
+    const moveWouldBlockCheckPath = (!checkThreatDirection || !moveset.includes(moveCoordinates))
+        ? false
+        : checkPathStepper(kingIndex, checkingOpponentIndex, moveIndex, checkThreatDirection);
+    return ((moveCoordinates === checkingOpponentCoordinates) || moveWouldBlockCheckPath);
+};
 
 function outOfCheckValidation(validPlayerMoves, opponentCheckingPieces) {
-
-    const playerKingCoordinates = validPlayerMoves.find(piece => piece.type === 'King').coordinates; 
+    
+    const playerKingCoordinates = validPlayerMoves.find(({type}) => type === 'King').coordinates; 
 
     const newValidPlayerMoves = validPlayerMoves.map((piece) => {
-        let filterFunction;
-        if (piece.type === 'King') filterFunction = (kingMoveCoordinates) => {
-            let moveInOpponentMoves, moveInOpponentCheckRange, pawnStepMove = false;
-            opponentCheckingPieces.forEach(({type, coordinates: checkingOpponentCoordinates, moveset, canCapture}) => {
-                moveInOpponentMoves = moveset.includes(kingMoveCoordinates);
-                if (moveInOpponentMoves && type === 'Pawn') {
-                    const kingMoveIndex = chessboardNotationEnum[kingMoveCoordinates];
-                    const checkingPawnCoordinates = chessboardNotationEnum[checkingOpponentCoordinates];
-                    pawnStepMove = ([8, 16].includes(Math.abs(kingMoveIndex - checkingPawnCoordinates)));
-                }
-                else if (!moveInOpponentMoves && ['Queen', 'Bishop', 'Rook'].includes(type)) {
-                    const checkThreat = canCapture.find(({coordinates: captureCordinates}) => captureCordinates === playerKingCoordinates);
-                    if (!checkThreat) return;
-                    const nextPossibleCheckIndex = stepperOperations[checkThreat.direction](chessboardNotationEnum[playerKingCoordinates]);
-                    const nextPossibleCheckCoordinates = chessboardArrayEnum[nextPossibleCheckIndex];
-                    moveInOpponentCheckRange = (nextPossibleCheckCoordinates === kingMoveCoordinates);
-                }
-            })
-            return ((!moveInOpponentMoves && !moveInOpponentCheckRange) || (pawnStepMove));
-        }
-        else filterFunction = (playerMoveCoordinates) => {
-            return opponentCheckingPieces.some(({type: testType, coordinates: checkingPieceCoordinates, moveset, canCapture}) => {
-                // Yes this is a duplicate in need of refactoring
-                const checkThreatDirection = canCapture && canCapture.find(({coordinates: captureCordinates}) => captureCordinates === playerKingCoordinates).direction;
-                const moveWouldBlockCheckPath = checkThreatDirection && moveset.includes(playerMoveCoordinates) && checkPathStepper(playerKingCoordinates, checkingPieceCoordinates, playerMoveCoordinates, checkThreatDirection);
-                return (opponentCheckingPieces.length === 1 && (playerMoveCoordinates === checkingPieceCoordinates || moveWouldBlockCheckPath))
-            })
-        }
+
+        const filterFunction = (piece.type === 'King') 
+            ? (kingMoveCoordinates) => {
+                const kingMoveIndex = chessboardNotationEnum[kingMoveCoordinates];
+                let moveInOpponentMoves, moveInOpponentCheckRange, pawnStepMove = false;
+
+                opponentCheckingPieces.forEach(({type, coordinates: checkingOpponentCoordinates, moveset, canCapture}) => {
+                    moveInOpponentMoves = moveset.includes(kingMoveCoordinates);
+                    if (moveInOpponentMoves && type === 'Pawn') {
+                        const checkingPawnIndex = chessboardNotationEnum[checkingOpponentCoordinates];
+                        pawnStepMove = ([8, 16].includes(Math.abs(kingMoveIndex - checkingPawnIndex)));
+                    }
+                    else if (!moveInOpponentMoves && ['Queen', 'Bishop', 'Rook'].includes(type)) {
+                        const playerKingIndex = chessboardNotationEnum[playerKingCoordinates];
+                        const checkThreatDirection = canCapture.find(matchCoordinates(playerKingCoordinates)).direction;
+                        const stillInCheckIndex = stepperOperations[checkThreatDirection](playerKingIndex);
+                        moveInOpponentCheckRange = (stillInCheckIndex === kingMoveIndex);
+                    }
+                })
+                return ((!moveInOpponentMoves && !moveInOpponentCheckRange) || (pawnStepMove))
+            }
+            : (playerMoveCoordinates) => {
+                const playerMoveIndex = chessboardNotationEnum[playerMoveCoordinates];
+                return (opponentCheckingPieces.length !== 1) 
+                    ? false
+                    : checkBlockTest(opponentCheckingPieces[0], playerKingCoordinates, playerMoveCoordinates)
+            }
+        
         return {...piece, moveset: piece.moveset.filter(filterFunction)}
     });
     return newValidPlayerMoves;
