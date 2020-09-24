@@ -82,14 +82,19 @@ function riskyCapturesFilter(color, opponentMoves) {
     }
 }
 
+function matchCoordinates(matchingCoordinates) {
+    return ({coordinates}) => matchingCoordinates === coordinates;
+}
+
 
 function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 
     const playerKingIndex = chessboardNotationEnum[playerMoves.find(({type}) => type === 'King').coordinates]
 
-    // For each player piece
-    const validatedplayerMoves = playerMoves.map(playerPiece => {
+    // Validated moves determined by testing each player piece
+    return playerMoves.map(playerPiece => {
 
+        const playerCoordinates = playerPiece.coordinates;
         let filterFunction;
 
         // Filter moves that would put King into opponent Valid Moveset
@@ -111,7 +116,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                     return moveInMoveset;
                 })
                 if (inOpponentMoveset) return false;
-                else return !riskyCaptures.some(({coordinates}) => coordinates === moveCoordinates)
+                else return !riskyCaptures.some(matchCoordinates(moveCoordinates))
             };
             
         }    
@@ -123,7 +128,7 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 
             const capturingPieces = opponentMoves.filter(({canCapture}) => 
                 {
-                    return (canCapture !== null && canCapture.some(({coordinates}) => coordinates === playerPiece.coordinates))
+                    return (canCapture !== null && canCapture.some(matchCoordinates(playerCoordinates)))
                 });
                         
             const threateningPiece = capturingPieces.find(opponentPiece => {
@@ -134,9 +139,10 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 
                     const opponentType = opponentPiece.type;
                     const opponentIndex = chessboardNotationEnum[opponentPiece.coordinates];
+                    const opponentPossibleMoves = allPossibleMoves[opponentType][opponentIndex].possibleMoveset;
 
-                    if (allPossibleMoves[opponentType][opponentIndex].possibleMoveset.includes(playerKingIndex)) {
-                        const matchingCanCapture = opponentPiece.canCapture.find(({coordinates}) => coordinates === playerPiece.coordinates)
+                    if (opponentPossibleMoves.includes(playerKingIndex)) {
+                        const matchingCanCapture = opponentPiece.canCapture.find(matchCoordinates(playerCoordinates));
                         const captureDirection = directionTest(opponentIndex, playerKingIndex);
 
                         if (captureDirection === matchingCanCapture.direction) {
@@ -144,21 +150,19 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                             return true;
                         }
                         else return false;
-                    }
+                    };
                 
                 };
             
             });
-
-            // Check if there are any pieces of any color between the playerPiece and the player king on relevant axis
-
-            let pieceBlockingCheck;
-
+            
             if (threateningPiece) {
 
-                pieceBlockingCheck = true;
+                // Check if there are any pieces of any color between the playerPiece and the player king on relevant axis
                 
-                let stepIndex = stepperOperations[threatenDirection](chessboardNotationEnum[playerPiece.coordinates]);
+                let pieceBlockingCheck = true;
+                
+                let stepIndex = stepperOperations[threatenDirection](chessboardNotationEnum[playerCoordinates]);
 
                 while (stepIndex !== playerKingIndex) {
 
@@ -170,35 +174,35 @@ function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
                     
                     stepIndex = stepperOperations[threatenDirection](stepIndex);
                 }
+
+                // If so, then create a reference of possible moves along given direction to filter piece moves by
+    
+                if (pieceBlockingCheck) {
+    
+                    let stepIndex = chessboardNotationEnum[threateningPiece.coordinates];
+    
+                    const onlyValidPlayerMoves = [stepIndex];
+    
+                    while (stepIndex !== playerKingIndex) {
+                        
+                        stepIndex = stepperOperations[threatenDirection](stepIndex);
+    
+                        onlyValidPlayerMoves.push(stepIndex);
+    
+                    }
+    
+                    filterFunction = (moveCoordinates) => onlyValidPlayerMoves.includes(chessboardNotationEnum[moveCoordinates]);
+    
+                }
             };
 
-            // If not, then create a reference of possible moves along given direction to filter piece moves by
-
-            if (pieceBlockingCheck) {
-
-                let stepIndex = chessboardNotationEnum[threateningPiece.coordinates];
-
-                const onlyValidPlayerMoves = [stepIndex]
-
-                while (stepIndex !== playerKingIndex) {
-                    
-                    stepIndex = stepperOperations[threatenDirection](stepIndex);
-
-                    onlyValidPlayerMoves.push(stepIndex);
-
-                }
-
-                filterFunction = (moveCoordinates) => onlyValidPlayerMoves.includes(chessboardNotationEnum[moveCoordinates]);
-
-            }
         };
 
-        return (filterFunction) ? {...playerPiece, moveset: playerPiece.moveset.filter(filterFunction)} : {...playerPiece};
+        return (filterFunction) 
+            ? {...playerPiece, moveset: playerPiece.moveset.filter(filterFunction)} 
+            : {...playerPiece};
 
     })
-
-    return validatedplayerMoves;
-
 };
 
 module.exports = {intoCheckValidation};
