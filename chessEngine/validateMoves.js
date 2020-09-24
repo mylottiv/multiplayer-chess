@@ -1,8 +1,6 @@
 const {preCheckValidation} = require('./preCheckValidation');
-const {checkValidate} = require('./finalValidation/checkValidate');
-const {outOfCheckValidation} = require('./finalValidation/outOfCheckValidation');
-const {castlingValidation} = require('./finalValidation/castlingValidation');
-const {checkMateTest} = require('./finalValidation/checkMateTest');
+const {checkValidate, checkMateTest} = require('./checkValidation');
+const {outOfCheckValidation, castlingValidation} = require('./postCheckValidation');
 
 function validateMoves(BoardState, playerColor) {
 
