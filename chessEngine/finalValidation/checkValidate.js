@@ -12,7 +12,7 @@ function checkValidate(validPlayerMoves, validOpponentMoves) {
         else return kingInMoveset
     });
     const playerCheck = (checkingPieces.length > 0);
-    return (playerCheck) ? {playerCheck, checkingPieces} : {playerCheck, checkingPieces: []};
+    return (playerCheck) ? {inCheck: playerCheck, checkingPieces} : {inCheck: playerCheck, checkingPieces: []};
 }
 
 module.exports = {checkValidate};

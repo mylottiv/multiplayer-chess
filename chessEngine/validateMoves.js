@@ -12,16 +12,15 @@ function validateMoves(BoardState, playerColor) {
     const preCheckPlayerMoves = preCheckValidatedMoves[playerColor];
     const preCheckOpponentMoves = preCheckValidatedMoves[opponentColor];
 
-    const {playerCheck: inCheck, checkingPieces} = checkValidate(preCheckPlayerMoves, preCheckOpponentMoves);
-    if (inCheck) console.log(playerColor, 'in check');
-    if (inCheck) {
-        const finalValidatedMoves = outOfCheckValidation(preCheckPlayerMoves, checkingPieces);
-        return (checkMateTest(finalValidatedMoves)) ? 'Checkmate' : finalValidatedMoves;
-    }
-    else {
-        const finalValidatedMoves = castlingValidation(BoardState, playerColor, preCheckPlayerMoves, preCheckOpponentMoves);
-        return finalValidatedMoves
-    }
+    const {inCheck, checkingPieces} = checkValidate(preCheckPlayerMoves, preCheckOpponentMoves);
+
+    if (inCheck) console.log(playerColor, 'in check')
+
+    const finalValidatedMoves = (inCheck) 
+        ? outOfCheckValidation(preCheckPlayerMoves, checkingPieces)
+        : castlingValidation(BoardState, playerColor, preCheckPlayerMoves, preCheckOpponentMoves);
+    
+    return (inCheck && checkMateTest(finalValidatedMoves)) ? 'Checkmate' : finalValidatedMoves
 };
 
 module.exports = {validateMoves};
