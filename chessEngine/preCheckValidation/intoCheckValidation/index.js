@@ -2,7 +2,8 @@ const { allPossibleMoves } = require('../../possibleMovesets');
 const { stepperOperations } = require('../../constants/stepperOperations');
 const { chessboardNotationEnum } = require('../../constants/chessboardEnums');
 const {directionTest} = require('./directionalTests');
-const {riskyCapturesFilter, matchCoordinates} = require('./callbackUtils');
+const {riskyCapturesFilter} = require('./filterFunctions');
+const {matchCoordinates} = require('../../constants/callbackUtils');
 
 function intoCheckValidation(chessboard, playerMoves, opponentMoves) {
 

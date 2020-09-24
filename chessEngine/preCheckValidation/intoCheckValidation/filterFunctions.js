@@ -35,8 +35,4 @@ function riskyCapturesFilter(color, opponentMoves) {
     }
 }
 
-function matchCoordinates(matchingCoordinates) {
-    return ({coordinates}) => matchingCoordinates === coordinates;
-}
-
-module.exports = {riskyCapturesFilter, matchCoordinates};
+module.exports = {riskyCapturesFilter};
