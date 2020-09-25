@@ -43,7 +43,6 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
 
             const parsedWhiteNotation = notationValidator(whiteMove, 'White');
             console.log('White Move Turn:', turnCounter, whiteMove, parsedWhiteNotation);
-            // if (key === 'dummyInputTwo' && turnCounter === 6) console.log('DEBUG', validatedMoves.White);
             const capturedByWhite = (parsedWhiteNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validatedMoves.White, parsedWhiteNotation);
             if (capturedByWhite) capturedPieces.White.push(capturedByWhite);
             chessBoardStateStore[turnCounter].WhiteTurn = currentBoardState.map(square => {return {...square}});

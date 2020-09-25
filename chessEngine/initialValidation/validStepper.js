@@ -1,13 +1,13 @@
 const {chessboardArrayEnum} = require('../constants/chessboardEnums');
 const {stepperOperations} = require('../constants/stepperOperations');
+const {adjacencyTest} = require('../preCheckValidation/intoCheckValidation/directionalTests');
 
-function movesStepperHandler(boardState, possibleMoves, pieceColor, movesIndexes) {
+function movesStepperHandler(pieceIndex, boardState, possibleMoves, pieceColor, movesIndexes) {
     const validMoves = [];
     const canCapture = [];
 
     for (const [direction, moveIndex] of Object.entries(movesIndexes)) {
-        // console.log('DEBUG', direction, moveIndex)
-        validMovesStepper(direction, moveIndex);
+        if (adjacencyTest(pieceIndex, moveIndex)) validMovesStepper(direction, moveIndex);
     };
 
     return {validMoves, canCapture};

@@ -34,7 +34,7 @@ function rookValidator(boardState, {numericalIndex, possibleMoveset}, color) {
         left: stepperOperations['left'](numericalIndex),
         right: stepperOperations['right'](numericalIndex)
     }
-    const {validMoves, canCapture} = movesStepperHandler(boardState, possibleMoveset, color, movesStepIndexes);
+    const {validMoves, canCapture} = movesStepperHandler(numericalIndex, boardState, possibleMoveset, color, movesStepIndexes);
     return {moveset: validMoves, canCapture};
 };
 
@@ -52,7 +52,7 @@ function bishopValidator(boardState, {numericalIndex, possibleMoveset}, color) {
         'up-left': stepperOperations['up-left'](numericalIndex),
         'down-left': stepperOperations['down-left'](numericalIndex)
     }
-    const {validMoves, canCapture} = movesStepperHandler(boardState, possibleMoveset, color, movesStepIndexes);
+    const {validMoves, canCapture} = movesStepperHandler(numericalIndex, boardState, possibleMoveset, color, movesStepIndexes);
     return {moveset: validMoves, canCapture};
 };
 
@@ -68,7 +68,7 @@ function queenValidator(boardState, {numericalIndex, possibleMoveset}, color) {
         'up-left': stepperOperations['up-left'](numericalIndex),
         'down-left': stepperOperations['down-left'](numericalIndex),
     }
-    const {validMoves, canCapture} = movesStepperHandler(boardState, possibleMoveset, color, movesStepIndexes);
+    const {validMoves, canCapture} = movesStepperHandler(numericalIndex, boardState, possibleMoveset, color, movesStepIndexes);
     return {moveset: validMoves, canCapture};
 };
 
@@ -85,7 +85,7 @@ function kingValidator(boardState, {numericalIndex, possibleMoveset}, color) {
         'up-left': stepperOperations['up-left'](numericalIndex),
         'down-left': stepperOperations['down-left'](numericalIndex),
     }
-    const {validMoves, canCapture} = movesStepperHandler(boardState, possibleMoveset, color, movesStepIndexes);
+    const {validMoves, canCapture} = movesStepperHandler(numericalIndex, boardState, possibleMoveset, color, movesStepIndexes);
     return {moveset: validMoves, canCapture};
 };
 
