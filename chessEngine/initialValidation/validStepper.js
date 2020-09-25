@@ -1,6 +1,6 @@
 const {chessboardArrayEnum} = require('../constants/chessboardEnums');
 const {stepperOperations} = require('../constants/stepperOperations');
-const {adjacencyTest} = require('../preCheckValidation/intoCheckValidation/directionalTests');
+const {adjacencyTest} = require('../intoCheckValidation/directionalTests');
 
 function movesStepperHandler(pieceIndex, boardState, possibleMoves, pieceColor, movesIndexes) {
     const validMoves = [];

@@ -1,4 +1,4 @@
-const { chessboardEdges } = require('../../constants/chessboardEnums');
+const { chessboardEdges } = require('../constants/chessboardEnums');
 
 function directionTest(startPieceIndex, targetPieceIndex) {
     

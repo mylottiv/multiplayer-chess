@@ -1,5 +1,5 @@
 const {firstRoundValidation} = require('./firstRoundValidation');
-const {intoCheckValidation} = require('./intoCheckValidation');
+const {intoCheckValidation} = require('../intoCheckValidation');
 
 function preCheckValidation(BoardState) {
     const firstRoundValidMoves = firstRoundValidation(BoardState);
