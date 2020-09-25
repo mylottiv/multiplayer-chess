@@ -1,6 +1,6 @@
 const { allPossibleMoves } = require('../possibleMovesets');
 const { chessboardNotationEnum } = require('../constants/chessboardEnums');
-const {adjacencyTest} = require('./directionalTests');
+const {adjacencyTest} = require('../constants/utilFunctions');
 
 function riskyCapturesFilter(color, opponentMoves) {
 

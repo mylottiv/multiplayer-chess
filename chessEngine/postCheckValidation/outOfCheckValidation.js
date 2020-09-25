@@ -1,6 +1,6 @@
 const {stepperOperations} = require('../constants/stepperOperations');
 const { chessboardNotationEnum } = require('../constants/chessboardEnums');
-const {matchCoordinates} =  require('../constants/callbackUtils');
+const {matchCoordinates} =  require('../constants/utilFunctions');
 
 function checkPathStepper(kingIndex, checkingPieceIndex, moveIndex, direction) {
     const stepOperation = direction && stepperOperations[direction];
