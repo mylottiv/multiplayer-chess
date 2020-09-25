@@ -37,7 +37,7 @@ function movePiece(chessboard, startingIndex, targetIndex, promotionPiece) {
     // Pawn Promotion test
     if (startingPiece.type === 'Pawn' && promotionPiece !== null) {
         const pawnColor = startingPiece.color;
-        chessboard[targetIndex].Piece = {Type: promotionPiece, color: pawnColor};
+        chessboard[targetIndex].Piece = {type: promotionPiece, color: pawnColor};
         if (promotionPiece === 'Rook') chessboard[targetIndex].Piece.canCastle = false;
     }
 
