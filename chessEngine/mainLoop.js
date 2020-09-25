@@ -3,6 +3,13 @@ const {validateMoves} = require('./validateMoves');
 const {notationValidator} = require('./notationHandling/notationValidator');
 const {validateParsedMove} = require('./movement/validateParsedMove');
 const {dummyMoves} = require('./dummyInputs');
+const { chessboardNotationEnum } = require('./constants/chessboardEnums');
+
+function enPassantClear(chessboard, validatedMoves) {
+    const playerPawns = validatedMoves.filter(({type}) => type === 'Pawn').map(({coordinates}) => coordinates);
+    console.log('player pawn coordinates', playerPawns);
+    playerPawns.forEach(coordinates => chessboard[chessboardNotationEnum[coordinates]].Piece.enPassant = false);
+}
 
 function getValidatedMoves(chessboard) {
     const returnedValidatedMvoves = {
@@ -41,6 +48,8 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
 
             if (typeof validatedMoves === 'string') console.log(validatedMoves);
 
+            else if (turnCounter >= 3) enPassantClear(currentBoardState, validatedMoves.White);
+
             const parsedWhiteNotation = notationValidator(whiteMove, 'White');
             console.log('White Move Turn:', turnCounter, whiteMove, parsedWhiteNotation);
             const capturedByWhite = (parsedWhiteNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validatedMoves.White, parsedWhiteNotation);
@@ -50,6 +59,8 @@ function mainLoop(startingColorTurn = 'WhiteTurn') {
             validatedMoves = getValidatedMoves(currentBoardState);
 
             if (typeof validatedMoves === 'string') console.log(validatedMoves);
+
+            else if (turnCounter >= 3) enPassantClear(currentBoardState, validatedMoves.Black);
 
             const parsedBlackNotation = notationValidator(blackMove, 'Black'); 
             console.log('Black Move Turn:', turnCounter, blackMove, parsedBlackNotation);
