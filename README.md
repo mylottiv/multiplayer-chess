@@ -9,25 +9,25 @@ Web Application for playing Chess Online with others. With an engine built on to
 ### Frontend
 
 - **React**:
-Front End Javascript Component Framework
+Front End Javascript Component Framework.
 - **Apollo-Client**:
-State Management and GraphQL Queries
-- **Bulma**:
-Lightweight CSS Component Framework
+State Management and GraphQL Queries.
+- **Tailwind**:
+Low level utility class oriented CSS framework.
 
 
 ### Backend
 
-- **Express**:
-Unopinionated Node Framework
+- **Next**:
+Lightweight React backend Framework with Static Page Generation, Server Side Rendering, and API routing.
 - **Apollo-Server**:
-GraphQL Schemas and Queries and Websocket Subscriptions
+GraphQL Schemas and Queries and Websocket Subscriptions.
 - **Auth0**:
-Painless JWT based Identity Management with Single Sign On and Multifactor Authentication
+Painless JWT based Identity Management with Single Sign On and Multifactor Authentication.
 - **bcrypt**:
 Hashing and Decrypting solutions allowing non-Facebook/Google/Etc. Registration and login.
 - **ObjectionJS**:
-Object Relational Mapping for SQL Database
+Object Relational Mapping for SQL Database.
     
 ## Chess Engine
 
