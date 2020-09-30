@@ -12,8 +12,10 @@ Web Application for playing Chess Online with others. With an engine built on to
 Front End Javascript Component Framework.
 - **Apollo-Client**:
 State Management and GraphQL Queries.
-- **Tailwind**:
-Low level utility class oriented CSS framework.
+- **Twin with Styled Components**
+Babel Macro to use Tailwind utility classes inside a CSS-in-JS library, here using Styled Components.
+- **Tailwind with PostCSS**:
+Low level utility class oriented CSS framework. Included with postprocessor alongside Twin for use of global base classes.
 
 
 ### Backend

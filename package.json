@@ -1,0 +1,42 @@
+{
+  "name": "multiplayer-chess",
+  "version": "1.0.0",
+  "description": "Web Application for playing Chess Online with others. With an engine built on top of algorithmic notation, the client can both generate and display moves from live player choices as well as play/replay games from logs. The backend will handle matchmaking, both unranked and ranked with Elo, persistent game logs and Elo rank storage with User registration/login, and host the main game engine, managing matches through socket subscriptions.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "babelMacros": {
+    "twin": {
+      "config": "tailwind.config.js",
+      "preset": "styled-components",
+      "debugProp": true,
+      "debugPlugins": false,
+      "debug": false
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mylottiv/multiplayer-chess.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mylottiv/multiplayer-chess/issues"
+  },
+  "homepage": "https://github.com/mylottiv/multiplayer-chess#readme",
+  "dependencies": {
+    "next": "^9.5.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "styled-components": "^5.2.0",
+    "twin.macro": "^1.10.0"
+  },
+  "devDependencies": {
+    "postcss-preset-env": "^6.7.0",
+    "tailwindcss": "^1.8.10"
+  }
+}
