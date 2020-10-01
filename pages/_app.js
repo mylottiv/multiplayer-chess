@@ -6,6 +6,5 @@ import '../styles/index.css';
 // import 'tailwindcss/dist/base.min.css'
 
 export default function MyApp({ Component, pageProps }) {
-    console.log('whats happening', Component, pageProps)
     return <Component {...pageProps} />
 }
