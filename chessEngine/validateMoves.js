@@ -2,6 +2,19 @@ const {preCheckValidation} = require('./preCheckValidation');
 const {checkValidate, checkMateTest} = require('./checkValidation');
 const {outOfCheckValidation, castlingValidation} = require('./postCheckValidation');
 
+function getValidatedMoves(chessboard) {
+    const returnedValidatedMvoves = {
+        White: validateMoves(chessboard, 'White'),
+        Black: validateMoves(chessboard, 'Black')
+    }
+
+    return (returnedValidatedMvoves.White === 'Checkmate') 
+        ? 'White is in Checkmate!' 
+        : (returnedValidatedMvoves.Black === 'Checkmate') 
+            ? 'Black is in Checkmate!'
+            : returnedValidatedMvoves;
+}
+
 function validateMoves(BoardState, playerColor) {
 
     const opponentColor = (playerColor === 'White') ? 'Black' : 'White';
@@ -21,4 +34,4 @@ function validateMoves(BoardState, playerColor) {
     return (inCheck && checkMateTest(finalValidatedMoves)) ? 'Checkmate' : finalValidatedMoves
 };
 
-module.exports = {validateMoves};
+module.exports = {getValidatedMoves};
