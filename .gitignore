@@ -105,12 +105,8 @@ dist
 
 # Local Prework Documents
 Planning.md
-dummydata.txt
 checkFunctionNotes.md
 coreLoop.md
 debugTestScratch/
-checkmateData.txt
-enPassantData.txt
-extraDummyData.txt
-promotionData.txt
+localDummyData/
 public/Chess_Board.svg
