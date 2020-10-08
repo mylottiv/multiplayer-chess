@@ -1,4 +1,4 @@
-const {newBoard} = require('./constants/defaultBoardState');
+const {newBoard} = require('./newGame/newBoard');
 const {replayLoop} = require('./replayLoop');
 const {dummyMoves} = require('./dummyInputs');
 

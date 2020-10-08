@@ -28,7 +28,7 @@ function validateMoves(BoardState, playerColor) {
     return (inCheck && checkMateTest(finalValidatedMoves)) ? 'Checkmate' : finalValidatedMoves
 };
 
-function getValidatedMoves(chessboard, currentPlayerColor, enPassantClearFlag = false) {
+function getValidMoves(chessboard, currentPlayerColor, enPassantClearFlag = false) {
     const returnedValidatedMoves = {
         White: validateMoves(chessboard, 'White'),
         Black: validateMoves(chessboard, 'Black')
@@ -48,4 +48,4 @@ function getValidatedMoves(chessboard, currentPlayerColor, enPassantClearFlag = 
 }
 
 
-module.exports = {getValidatedMoves};
+module.exports = {getValidMoves};

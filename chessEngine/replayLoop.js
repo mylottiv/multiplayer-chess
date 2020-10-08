@@ -1,4 +1,4 @@
-const {getValidatedMoves} = require('./moveValidation');
+const {getValidMoves} = require('./moveValidation');
 const {notationValidator} = require('./notationHandling/notationValidator');
 const {validateParsedMove} = require('./movement/validateParsedMove');
 const { chessboardNotationEnum } = require('./constants/chessboardEnums');
@@ -13,7 +13,7 @@ function replayLoop(chessBoardStateStore, capturedPieces, currentBoardState) {
     
         chessBoardStateStore.push({WhiteTurn: [], BlackTurn: []});
     
-        validatedMoves = getValidatedMoves(currentBoardState, 'White', (turnCounter >= 3));
+        validatedMoves = getValidMoves(currentBoardState, 'White', (turnCounter >= 3));
     
         if (typeof validatedMoves === 'string') console.log(validatedMoves);
         
@@ -23,7 +23,7 @@ function replayLoop(chessBoardStateStore, capturedPieces, currentBoardState) {
         if (capturedByWhite) capturedPieces.White.push(capturedByWhite);
         chessBoardStateStore[turnCounter].WhiteTurn = currentBoardState.map(square => {return {...square}});
     
-        validatedMoves = getValidatedMoves(currentBoardState, 'Black', (turnCounter >= 3));
+        validatedMoves = getValidMoves(currentBoardState, 'Black', (turnCounter >= 3));
     
         if (typeof validatedMoves === 'string') console.log(validatedMoves);
         
