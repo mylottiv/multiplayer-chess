@@ -2,9 +2,14 @@ const {newBoard} = require('./newBoard');
 
 function newGame() {
     return {
-        currentChessBoard: newBoard(),
+        currentBoardState: newBoard(),
         boardStateStore: [{StartingBoard: newBoard()}],
-        capturedPieces: {White: [], Black: []}
+        capturedPieces: {White: [], Black: []},
+        gameState: {
+            turnCounter: 1,
+            currentColor: 'White',
+            validMoves: {}
+        }
     }
 }
 

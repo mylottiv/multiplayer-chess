@@ -27,15 +27,15 @@ function validateMoves(BoardState, playerColor) {
     return (inCheck && checkMateTest(finalValidatedMoves)) ? 'Checkmate' : finalValidatedMoves
 };
 
-function getValidMoves(chessboard, currentPlayerColor, enPassantClearFlag = false) {
+function getValidMoves(chessboard, currentPlayerColor = null, enPassantClearFlag = false) {
     const returnedValidatedMoves = {
         White: validateMoves(chessboard, 'White'),
         Black: validateMoves(chessboard, 'Black')
     }
 
-    const currentPlayerMoves = returnedValidatedMoves[currentPlayerColor];
+    const currentPlayerMoves = currentPlayerColor && returnedValidatedMoves[currentPlayerColor];
 
-    if (enPassantClearFlag && currentPlayerMoves !== 'Checkmate') {
+    if (enPassantClearFlag && currentPlayerMoves && currentPlayerMoves !== 'Checkmate') {
         enPassantClear(chessboard, returnedValidatedMoves[currentPlayerColor]);
     }
 
