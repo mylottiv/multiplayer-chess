@@ -1,7 +1,6 @@
 const {getValidMoves} = require('./moveValidation');
 const {notationValidator} = require('./notationHandling/notationValidator');
 const {validateParsedMove} = require('./movement/validateParsedMove');
-const { chessboardNotationEnum } = require('./constants/chessboardEnums');
 
 function replayLoop(chessBoardStateStore, capturedPieces, currentBoardState) {
 
