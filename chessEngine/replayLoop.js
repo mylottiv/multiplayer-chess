@@ -1,4 +1,4 @@
-const {getValidMoves} = require('./moveValidation');
+const {getValidMoves} = require('./getValidMoves');
 const {playerTurn} = require('./playerTurn');
 
 function replayLoop({currentBoardState, boardStateStore, capturedPieces, gameState}) {
