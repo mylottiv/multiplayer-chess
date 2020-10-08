@@ -1,6 +1,7 @@
 const {newBoard} = require('./newGame/newBoard');
 const {replayLoop} = require('./replayLoop');
 const {dummyMoves} = require('./dummyInputs');
+const {newGame} = require('./newGame');
 
 
 function testLoop() {
@@ -8,14 +9,12 @@ function testLoop() {
     Object.entries(dummyMoves).forEach(([key, dummyArray]) => {
         
         // Test stores, will eventually be actual database entries once done to scale
-        const startingBoard = newBoard();
-        const chessBoardStateStore = [{StartingBoard: newBoard()}];
-        const capturedPieces = {White: [], Black: []};
+        const {currentChessBoard, boardStateStore, capturedPieces} = newGame();
         
         console.log('Now Testing', key);
         
-        dummyArray.forEach(replayLoop(chessBoardStateStore, capturedPieces, startingBoard));
-        console.log(chessBoardStateStore[chessBoardStateStore.length - 1].BlackTurn);
+        dummyArray.forEach(replayLoop(boardStateStore, capturedPieces, currentChessBoard));
+        console.log(boardStateStore[boardStateStore.length - 1].BlackTurn);
     });
 };
 

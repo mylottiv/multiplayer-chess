@@ -5,7 +5,6 @@ const {chessboardNotationEnum} = require('../constants/chessboardEnums');
 
 function enPassantClear(chessboard, validatedMoves) {
     const playerPawns = validatedMoves.filter(({type}) => type === 'Pawn').map(({coordinates}) => coordinates);
-    console.log('player pawn coordinates', playerPawns);
     playerPawns.forEach(coordinates => chessboard[chessboardNotationEnum[coordinates]].Piece.enPassant = false);
 }
 
