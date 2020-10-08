@@ -2,35 +2,39 @@ const {getValidMoves} = require('./moveValidation');
 const {notationValidator} = require('./notationHandling/notationValidator');
 const {validateParsedMove} = require('./movement/validateParsedMove');
 
-function replayLoop(chessBoardStateStore, capturedPieces, currentBoardState) {
+function playerTurn(playerMove, color, turn, validMoves, currentBoardState, boardStateStore, capturedPieces) {
+        
+    if (typeof validMoves === 'string') console.log(validMoves);
+    
+    const parsedNotation = notationValidator(playerMove, color);
+    console.log(color, 'Move Turn:', turn, playerMove, parsedNotation);
 
-    let validatedMoves, turnCounter;
+    const capturedPiece = (parsedNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validMoves[color], parsedNotation);
+    if (capturedPiece) capturedPieces.White.push(capturedPiece);
+    
+    const currentPlayerTurn = (color === 'White') ? 'WhiteTurn' : 'BlackTurn'
+    boardStateStore[turn][currentPlayerTurn] = currentBoardState.map(square => {return {...square}});
+}
+
+function replayLoop({currentBoardState, boardStateStore, capturedPieces, gameState}) {
 
     return ([whiteMove, blackMove], turnIndex) => {
     
-        turnCounter = turnIndex + 1;
+        gameState.turnCounter = turnIndex + 1;
     
-        chessBoardStateStore.push({WhiteTurn: [], BlackTurn: []});
-    
-        validatedMoves = getValidMoves(currentBoardState, 'White', (turnCounter >= 3));
-    
-        if (typeof validatedMoves === 'string') console.log(validatedMoves);
+        boardStateStore.push({WhiteTurn: {chessboard: []}, BlackTurn: []});
+
+        gameState.currentColor = 'White';
+
+        gameState.validMoves = getValidMoves(currentBoardState, gameState.currentColor, (gameState.turnCounter >=3))
+
+        playerTurn(whiteMove, 'White', gameState.turnCounter, gameState.validMoves, currentBoardState, boardStateStore, capturedPieces);
         
-        const parsedWhiteNotation = notationValidator(whiteMove, 'White');
-        console.log('White Move Turn:', turnCounter, whiteMove, parsedWhiteNotation);
-        const capturedByWhite = (parsedWhiteNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validatedMoves.White, parsedWhiteNotation);
-        if (capturedByWhite) capturedPieces.White.push(capturedByWhite);
-        chessBoardStateStore[turnCounter].WhiteTurn = currentBoardState.map(square => {return {...square}});
-    
-        validatedMoves = getValidMoves(currentBoardState, 'Black', (turnCounter >= 3));
-    
-        if (typeof validatedMoves === 'string') console.log(validatedMoves);
+        gameState.currentColor = 'Black';
+
+        gameState.validMoves = getValidMoves(currentBoardState, gameState.currentColor, (gameState.turnCounter >=3))
         
-        const parsedBlackNotation = notationValidator(blackMove, 'Black'); 
-        console.log('Black Move Turn:', turnCounter, blackMove, parsedBlackNotation);
-        const capturedByBlack = (parsedBlackNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validatedMoves.Black, parsedBlackNotation);
-        if (capturedByBlack) capturedPieces.Black.push(capturedByBlack);
-        chessBoardStateStore[turnCounter].BlackTurn = currentBoardState.map(square => {return {...square}});
+        playerTurn(blackMove, 'Black', gameState.turnCounter, gameState.validMoves, currentBoardState, boardStateStore, capturedPieces);
     
     }
 }
