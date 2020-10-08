@@ -1,4 +1,4 @@
-const {startingPieceEnum} = require('../constants/notationEnums');
+const {startingPieceEnum} = require('../../constants/notationEnums');
 const {notationTests} = require('./notationTests');
 
 function pawnPromotionParser(notation) {

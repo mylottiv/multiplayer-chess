@@ -1,5 +1,5 @@
-const {chessboardNotationEnum, fileRangeEnum, rankRangeEnum} = require('../constants/chessboardEnums');
-const {fileCharSet, rankCharSet} = require('../constants/notationEnums');
+const {chessboardNotationEnum, fileRangeEnum, rankRangeEnum} = require('../../constants/chessboardEnums');
+const {fileCharSet, rankCharSet} = require('../../constants/notationEnums');
 const {movePiece} = require('./movePiece');
 
 function validateParsedMove(chessboard, validMoves, {piece, targetNotation, startingNotation, pawnPromotion}) {

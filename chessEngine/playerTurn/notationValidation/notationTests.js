@@ -1,4 +1,4 @@
-const {startingPieceEnum, rankCharSet, fileCharSet} = require('../constants/notationEnums');
+const {startingPieceEnum, rankCharSet, fileCharSet} = require('../../constants/notationEnums');
 
 function notationTests(testNotation) {
     return {

@@ -1,20 +1,5 @@
 const {getValidMoves} = require('./moveValidation');
-const {notationValidator} = require('./notationHandling/notationValidator');
-const {validateParsedMove} = require('./movement/validateParsedMove');
-
-function playerTurn(playerMove, color, turn, validMoves, currentBoardState, boardStateStore, capturedPieces) {
-        
-    if (typeof validMoves === 'string') console.log(validMoves);
-    
-    const parsedNotation = notationValidator(playerMove, color);
-    console.log(color, 'Move Turn:', turn, playerMove, parsedNotation);
-
-    const capturedPiece = (parsedNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validMoves[color], parsedNotation);
-    if (capturedPiece) capturedPieces.White.push(capturedPiece);
-    
-    const currentPlayerTurn = (color === 'White') ? 'WhiteTurn' : 'BlackTurn'
-    boardStateStore[turn][currentPlayerTurn] = currentBoardState.map(square => {return {...square}});
-}
+const {playerTurn} = require('./playerTurn');
 
 function replayLoop({currentBoardState, boardStateStore, capturedPieces, gameState}) {
 
