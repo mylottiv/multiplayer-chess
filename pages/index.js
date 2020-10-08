@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import ChessboardBackground from '../components/ChessboardBackground';
 import SquareGrid from '../components/SquareGrid';
 import {rankRangeEnum} from '../chessEngine/constants/chessboardEnums';
-import {newBoard} from '../chessEngine/constants/defaultBoardState';
+import {newBoard} from '../chessEngine/newGame/newBoard';
 import {readInBoardState} from  '../testReadInBoardState';
 import tw from 'twin.macro';
 
