@@ -1,25 +1,4 @@
-// function boardInitializer(inputState) {
-//     return () => {
-//         return inputState.map(elem => {
-//             const isArray = Array.isArray(elem);
-//             if (!isArray) {
-//                 const originalPiece = elem.Piece
-//                 let clonePiece = null;
-//                 if (originalPiece !== null) {
-//                     clonePiece = {};
-//                     for (const [key, val] of Object.entries(originalPiece)) {
-//                         clonePiece[key] = val;
-//                     }
-//                 }
-//                 return {Piece: clonePiece}
-//             }
-//             else return boardInitializer(elem)
-//         });
-//     }
-// };
-
-// module.exports = {newBoard: boardInitializer(chessboardDefaultState)}
-module.exports = {newBoard: function() {
+function newBoard() {
     return [
         // Rank 1
         {Piece: {type: 'Rook', color: 'White', canCastle: true}},
@@ -94,4 +73,6 @@ module.exports = {newBoard: function() {
         {Piece: {type: 'Knight', color: 'Black'}},
         {Piece: {type: 'Rook', color: 'Black', canCastle: true}},
     ]; 
-}};
+};
+
+module.exports = {newBoard};
