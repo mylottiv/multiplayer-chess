@@ -1,5 +1,14 @@
-export default (req, res) => {
-    res.statusCode = 200
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ name: 'John Doe' }))
-}
+import { ApolloServer } from 'apollo-server-micro';
+import {schema} from './schema';
+
+const apolloServer = new ApolloServer({schema});
+
+const handler = apolloServer.createHandler({ path: "/api/graphql" });
+
+export const config = {
+  api: {
+    bodyParser: false
+  }
+};
+
+export default handler;
