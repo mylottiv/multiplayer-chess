@@ -3,7 +3,7 @@ import {pieceResolver} from './pieceResolver';
 
 const testState = readInBoardState('./localDummyData/dummyCheckmateOutputs.txt');
 
-let testTurn = {count: 0, color: 'White'};
+const testTurn = {count: 0, color: 'White'};
 
 const resolvers = {
     Query: {
@@ -33,7 +33,7 @@ const resolvers = {
     },
     Board: {
         squares({currentTurn}) {
-            return testState[currentTurn.count][currentTurn.color+'Turn'].map(({Piece}, index) => {return {index}});
+            return testState[currentTurn.count][currentTurn.color+'Turn'].map(({Piece}, index) => {return {currentTurn, index}});
         }
     }
 };

@@ -1,7 +1,9 @@
 function pieceResolver(testState, testTurn, inputFromParent) {
 
-    function functionCore(index) {
-        const {Piece} = testState[testTurn.count][testTurn.color+'Turn'][index];
+    console.log('Piece Fired', inputFromParent)
+
+    function functionCore(index, currentTurn = testTurn) {
+        const {Piece} = testState[currentTurn.count][currentTurn.color+'Turn'][index];
         if (Piece === null) return Piece
         const enPassant = ('enPassant' in Piece) ? Piece.enPassant : null;
         const canCastle = ('canCastle' in Piece) ? Piece.canCastle : null;
@@ -9,8 +11,8 @@ function pieceResolver(testState, testTurn, inputFromParent) {
     }
 
     return (inputFromParent) 
-        ? ({index}) => functionCore(index)
-        : (parent, {index}) => functionCore(index);
+        ? (parent) => functionCore(parent.index, parent.currentTurn)
+        : ({index}) => functionCore(index);
 };
 
 module.exports = {pieceResolver}
