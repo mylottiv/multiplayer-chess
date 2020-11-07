@@ -1,40 +1,55 @@
 import React, {useState, useEffect} from 'react';
 import ChessboardBackground from '../components/ChessboardBackground';
 import SquareGrid from '../components/SquareGrid';
+import UpdateButton from '../components/UpdateButton';
 import {rankRangeEnum} from '../chessEngine/constants/chessboardEnums';
 import {newBoard} from '../chessEngine/newGame/newBoard';
-import {readInBoardState} from  '../testReadInBoardState';
 import tw from 'twin.macro';
+import { ApolloClient, InMemoryCache, ApolloProvider} from '@apollo/client';
+
+const client = new ApolloClient({
+    uri: 'http://localhost:3000/api/graphql',
+    cache: new InMemoryCache()
+});
 
 export default function Index({styling, squareRankRef, btnStyling, startingBoard, boardStore}){
 
-    const [boardStateStore, setBoardStateStore] = useState(boardStore)
     const [currentBoardState, setCurrentBoardState] = useState(startingBoard);
-    const [currentTurn, setCurrentTurn] = useState(-1);
-    const [currentColor, setCurrentColor] = useState('Starting');
-    const incrementBoardState = (currentTurn, currentColor) => {
-        if (currentColor === 'WhiteTurn') setCurrentColor('BlackTurn');
-        else {
-            setCurrentColor('WhiteTurn');
-            setCurrentTurn(currentTurn + 1);
-        }
-    };
+    const [currentTurn, setCurrentTurn] = useState(0);
+    const [currentColor, setCurrentColor] = useState('White');
+    const [fetchedData, setFetchedData] = useState();
 
     useEffect(
         () => {
-            currentColor !== 'Starting' && setCurrentBoardState(boardStateStore[currentTurn][currentColor]);
+            if (fetchedData) {
+                console.log('Data received', fetchedData);
+                const newBoard = fetchedData.specificBoard.squares.map(({piece}) => {
+                    return (piece === null) 
+                        ? {Piece: null} 
+                        : {Piece: {type: piece.type, color: piece.color, enPassant: piece.enPassant, canCastle: piece.canCastle}}
+                });
+                setCurrentBoardState(newBoard);
+                console.log('Why no change', currentBoardState, newBoard);
+                if (currentColor === 'White') setCurrentColor('Black');
+                else {
+                    setCurrentTurn(currentTurn + 1);
+                    setCurrentColor('White');
+                }
+                // Idk why this neccessary but otherwise there's a loop
+                setFetchedData(undefined)
+            }
         },
-        [currentTurn, currentColor, boardStateStore]
+        [fetchedData, currentBoardState, currentTurn, currentColor]
     )
 
     return (
-        <>
-        <div css={styling}>
-            <SquareGrid rangeRef={squareRankRef} boardState={currentBoardState}/>
-            <ChessboardBackground />
-        </div>
-        <button css={btnStyling} onClick={() => incrementBoardState(currentTurn, currentColor)}>Next Board T: {currentTurn + 1} C: {currentColor}</button>
-        </>
+        <ApolloProvider client={client}>
+            <div css={styling}>
+                <SquareGrid rangeRef={squareRankRef} boardState={currentBoardState}/>
+                <ChessboardBackground />
+            </div>
+            <UpdateButton currentTurn={currentTurn} currentColor={currentColor} setData={(newData) => (newData !== fetchedData) && setFetchedData(newData)}/>
+        </ApolloProvider>
     )
 }
 
@@ -45,12 +60,8 @@ export async function getStaticProps() {
                 tw`relative mx-4 mt-8 mb-4`,
                 `width: 330px; height: 330px`
             ],
-            btnStyling: [
-                tw`bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded`
-            ],
             squareRankRef: rankRangeEnum,
             startingBoard: newBoard(),
-            boardStore: readInBoardState('./localDummyData/dummyCheckmateOutputs.txt')
         }
     }
 };
