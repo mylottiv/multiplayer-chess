@@ -22,7 +22,8 @@ export default function SquareGrid({rangeRef, boardState}) {
     return (
         <StyledGrid>
             {squares.map(({index, Piece}) => {
-                return (<Square squareIndex={index} pieceType={Piece !== null && Piece.type} color={Piece !== null && Piece.color} />)
+                const keyAndIdStr = `chessboard-square-${index}`;
+                return (<Square key={keyAndIdStr} id={keyAndIdStr} squareIndex={index} pieceType={Piece !== null && Piece.type} color={Piece !== null && Piece.color} />)
             })}
         </StyledGrid>
     )

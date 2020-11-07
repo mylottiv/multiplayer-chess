@@ -9,10 +9,8 @@ export default function Square({squareIndex, pieceType, color}) {
         ${tw`text-center`}
     `
 
-    const keyAndIdStr = `chessboard-square-${squareIndex}`
-
     return (
-        <StyledSquare key={keyAndIdStr} id={keyAndIdStr}>
+        <StyledSquare>
             <span css={tw`w-full h-full`, (color === 'White') ? tw`text-yellow-600` : (color === 'Black') ? tw`text-red-600` : tw`text-green-600`}>{pieceChar}</span>
         </StyledSquare>
     )
