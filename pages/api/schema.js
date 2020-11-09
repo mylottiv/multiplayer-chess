@@ -17,13 +17,49 @@ const typeDefs = gql`
     }
 
     type Board {
-        currentTurn: Turn!
         squares: [Square!]
+    }
+
+    type BoardStore {
+        turnNumber: Int!
+        board: Board!
+    }
+
+    type GameState {
+        currentTurnInfo: CurrentTurnInfo!
+        currentBoard: Board!
+        boardStateStore: BoardStateStore!
+    }
+
+    type BoardStateStore {
+        startingBoard: Board!
+        store: [BoardStore!]
     }
 
     type Turn {
         count: Int!
         color: String!
+    }
+
+    type CurrentTurnInfo {
+        currentTurn: Turn!
+        validMoves: AllValidMoves
+    }
+
+    type AllValidMoves {
+        white: PlayerValidMoves
+        black: PlayerValidMoves
+    }
+
+    type PlayerValidMoves {
+        pieceMovesets: [PieceValidMoves]
+    }
+
+    type PieceValidMoves {
+        type: String!
+        coordinates: String!
+        moveset: [String!]
+        canCapture: [String!]
     }
 
     input TurnInput {
@@ -32,12 +68,21 @@ const typeDefs = gql`
     }
 
     type Query {
-        piece(index: Int!): Piece!
-        pieces: [Piece!]
-        square(index: Int!): Square!
-        squares: [Square!]
-        specificBoard(turn: TurnInput!): Board!
+        # piece(index: Int!): Piece!
+        # pieces: [Piece!]
+        # square(index: Int!): Square!
+        # squares: [Square!]
+        # specificBoard(turn: TurnInput!): Board!
+        # currentBoard: Board!
+        gameState: GameState!
+        currentTurnInfo: CurrentTurnInfo!
         currentBoard: Board!
+        boardStateStore: BoardStateStore!    
+        specificBoard(turn: TurnInput!): Board!
+    }
+
+    type Mutation {
+        playerMakesMove(color: String! move: String!): GameState!
     }
 `
 
