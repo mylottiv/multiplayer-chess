@@ -7,11 +7,13 @@ function replayLoop({currentBoardState, boardStateStore, capturedPieces, gameSta
     
         gameState.turnCounter = turnIndex + 1;
     
-        boardStateStore.push({WhiteTurn: {chessboard: []}, BlackTurn: []});
+        boardStateStore.push({White: [], Black: []});
 
         gameState.currentColor = 'White';
 
         gameState.validMoves = getValidMoves(currentBoardState, gameState.currentColor, (gameState.turnCounter >=3))
+
+        console.log('VALID MOVES', gameState.validMoves);
 
         playerTurn(whiteMove, 'White', gameState.turnCounter, gameState.validMoves, currentBoardState, boardStateStore, capturedPieces);
         

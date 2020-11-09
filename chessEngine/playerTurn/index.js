@@ -11,7 +11,7 @@ function playerTurn(playerMove, color, turn, validMoves, currentBoardState, boar
     const capturedPiece = (parsedNotation !== 'Invalid Notation') && validateParsedMove(currentBoardState, validMoves[color], parsedNotation);
     if (capturedPiece) capturedPieces.White.push(capturedPiece);
     
-    const currentPlayerTurn = (color === 'White') ? 'WhiteTurn' : 'BlackTurn'
+    const currentPlayerTurn = (color === 'White') ? 'White' : 'Black'
     boardStateStore[turn][currentPlayerTurn] = currentBoardState.map(square => {return {...square}});
 }
 

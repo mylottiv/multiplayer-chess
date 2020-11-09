@@ -13,7 +13,7 @@ function testLoop() {
         console.log('Now Testing', key);
         
         dummyArray.forEach(replayLoop(newChessGame));
-        console.log(newChessGame.boardStateStore[newChessGame.gameState.turnCounter].BlackTurn);
+        console.log(newChessGame.boardStateStore[newChessGame.gameState.turnCounter].Black);
         console.log('turn', newChessGame.gameState.turnCounter);
     });
 };
