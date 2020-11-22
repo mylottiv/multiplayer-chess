@@ -1,10 +1,13 @@
-import {readInBoardState} from '../../../testReadInBoardState';
+// import {readInBoardState} from '../../../testReadInBoardState';
 import {newGame} from '../../../chessEngine/newGame';
 import {newMove} from '../../../chessEngine/newMove';
+import {PubSub} from 'graphql-subscriptions';
+
+const pubsub = new PubSub();
 
 const newGameTest = newGame();
 
-const dummyTestState = readInBoardState('./localDummyData/dummyCheckmateOutputs.txt');
+// const dummyTestState = readInBoardState('./localDummyData/dummyCheckmateOutputs.txt');
 
 const resolvers = {
     Query: {
@@ -104,10 +107,40 @@ const resolvers = {
     },
     Mutation: {
         playerMakesMove(_, {color, move}) {
-            console.log('COLOR & MOVE', color, move)
+            // console.log('COLOR & MOVE', color, move)
             newMove(newGameTest, move);
-            console.log('GameState', newGameTest.gameState)
+            // console.log('GameState', newGameTest.gameState);
+            // pubsub.publish('MOVE_MADE', newGameTest);
+            pubsub.publish('MOVE_MADE', {
+                opponentMakesMove: 
+                {
+                    count: newGameTest.gameState.turnCounter,
+                    color: newGameTest.gameState.currentColor
+                }
+            });
             return newGameTest;
+        }
+    },
+    Subscription: {
+        opponentMakesMove: {
+            // Unclear why this function didn't work, will keep until understood
+            // resolve: (payload) => {
+            //     const newPayload = {
+            //         opponentMakesMove: 
+            //         {
+            //             count: payload.gameState.turnCounter,
+            //             color: payload.gameState.currentColor
+            //         }
+            //     };
+            //     console.log('NEW PAYLOAD', newPayload)
+            //     return newPayload
+            // },
+            subscribe: () => {
+                const asyncIterator = pubsub.asyncIterator(['MOVE_MADE']);
+                console.log('here', asyncIterator);
+                // setTimeout(() => pubsub.publish('MOVE_MADE', newGameTest), 0);
+                return asyncIterator
+            }
         }
     }
 };
@@ -150,72 +183,5 @@ const resolvers = {
 //     canCapture: [Array]
 //   },
 // Black: [...]
-
-// {
-//     gameState {
-//       currentTurnInfo {
-//         currentTurn {
-//           count
-//           color
-//         }
-//         validMoves {
-//           white {
-//             pieceMovesets {
-//               type
-//               coordinates
-//               moveset
-//               canCapture
-//             }
-//           }
-//           black {
-//             pieceMovesets {
-//               type
-//               coordinates
-//               moveset
-//               canCapture
-//             }
-//           }
-//         }
-//       }
-//       currentBoard {
-//         squares {
-//           index
-//           piece {
-//             type
-//             color
-//             enPassant
-//             canCastle
-//           }
-//         }
-//       }
-//       boardStateStore {
-//         startingBoard {
-//           squares {
-//             index
-//             piece {
-//               type
-//               color
-//               enPassant
-//               canCastle
-//             }
-//             }
-//         }
-//         store {
-//           turnNumber
-//           board {
-//             squares {
-//               index
-//               piece {
-//                 type
-//                 color
-//                 enPassant
-//                 canCastle
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
 
 module.exports = {resolvers};

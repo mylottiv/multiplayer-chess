@@ -84,6 +84,12 @@ const typeDefs = gql`
     type Mutation {
         playerMakesMove(color: String! move: String!): GameState!
     }
+
+    type Subscription {
+        # opponentMakesMove: GameState!
+        # Turn type was for proof of concept, subscriptions work, but care must be taken to match up payload to schema
+        opponentMakesMove: Turn!
+    }
 `
 
 const schema = makeExecutableSchema({typeDefs, resolvers});
