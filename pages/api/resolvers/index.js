@@ -49,23 +49,28 @@ const resolvers = {
         }
     },
     GameState: {
-        currentTurnInfo({gameState}) {
+        currentTurnInfo(parent) {
+            console.log('INTERCEPTION', parent)
+            const {gameState} = parent
             return gameState
         },
         currentBoard({currentBoardState}) {
             return currentBoardState
         },
-        // boardStateStore({boardStateStore}) {
-        //     return boardStateStore
-        // }
+        boardStateStore({boardStateStore}) {
+            return boardStateStore
+        }
     },
     CurrentTurnInfo: {
-        currentTurn({turnCounter, currentColor}) {
+        currentTurn(parent) {
+            console.log('INTERCEPT', parent);
+            const {turnCounter, currentColor} = parent
             return {count: turnCounter, color: currentColor}
         },
-        // validMoves({validMoves}) {
-        //     return validMoves
-        // }
+        validMoves({validMoves}) {
+            // console.log('FIRED', validMoves)
+            return validMoves
+        }
     },
     BoardStateStore: {
         startingBoard(parent) {
@@ -109,14 +114,9 @@ const resolvers = {
         playerMakesMove(_, {color, move}) {
             // console.log('COLOR & MOVE', color, move)
             newMove(newGameTest, move);
-            // console.log('GameState', newGameTest.gameState);
-            // pubsub.publish('MOVE_MADE', newGameTest);
+            // THE KEY IS THAT SUBSCRIPTION FIELD BE MATCHED TO THE STATE TO GO INTO RESOLVER CHAIN
             pubsub.publish('MOVE_MADE', {
-                opponentMakesMove: 
-                {
-                    count: newGameTest.gameState.turnCounter,
-                    color: newGameTest.gameState.currentColor
-                }
+                opponentMakesMove: newGameTest
             });
             return newGameTest;
         }
@@ -124,16 +124,17 @@ const resolvers = {
     Subscription: {
         opponentMakesMove: {
             // Unclear why this function didn't work, will keep until understood
+            // This is called at very top of resolver chain, the payload goes into the schema from here
             // resolve: (payload) => {
-            //     const newPayload = {
-            //         opponentMakesMove: 
-            //         {
-            //             count: payload.gameState.turnCounter,
-            //             color: payload.gameState.currentColor
-            //         }
-            //     };
-            //     console.log('NEW PAYLOAD', newPayload)
-            //     return newPayload
+                // const newPayload = {
+                //     opponentMakesMove: 
+                //     {
+                //         count: payload.gameState.turnCounter,
+                //         color: payload.gameState.currentColor
+                //     }
+                // };
+            //     console.log('PAYLOAD', payload)
+            //     return payload
             // },
             subscribe: () => {
                 const asyncIterator = pubsub.asyncIterator(['MOVE_MADE']);
